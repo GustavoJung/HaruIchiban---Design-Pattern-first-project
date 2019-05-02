@@ -7,5 +7,7 @@ public interface Observador {
 	void iniciouJogo();
 
 	void fimDeJogo(String msgErro);
+        
+        void jardineiroJunior(int player);
 
 }

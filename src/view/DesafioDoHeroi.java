@@ -25,16 +25,24 @@ import controle.ControleJogoImpl;
 import controle.Observador;
 import java.awt.Button;
 import java.awt.FlowLayout;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+
 
 
 public class DesafioDoHeroi extends JFrame implements Observador {
 
 	private static final long serialVersionUID = 1L;
+
+    @Override
+    public void jardineiroJunior(int player) {            
+        jdialog.add(new JLabel("O Player " + player + " será o primeiro "
+                                + "a jogar! Boa Sorte!"));
+        jdialog.validate();
+        jdialog.repaint();
+    }
 	
 	class HeroiTableModel extends AbstractTableModel {
 
@@ -98,8 +106,17 @@ public class DesafioDoHeroi extends JFrame implements Observador {
 
         JRadioButton jrVermelho;
         JRadioButton jrAmarelo;
-	private void initComponents() {
-
+	JLabel jardineiroJunior;
+        JDialog jdialog; 
+        JLabel florAmarela1;
+        JLabel florAmarela2;
+        JLabel florAmarela3;
+        JLabel florVermelha1;
+        JLabel florVermelha2;
+        JLabel florVermelha3;
+        
+        private void initComponents() {
+                
 		// criar o tabuleiro e seus componentes
 		tabuleiro = new JTable();
 		tabuleiro.setModel(new HeroiTableModel());
@@ -113,19 +130,6 @@ public class DesafioDoHeroi extends JFrame implements Observador {
 		tabuleiro.setShowGrid(false);
 		tabuleiro.setIntercellSpacing(new Dimension(0, 0));
 		tabuleiro.setDefaultRenderer(Object.class, new HeroiRenderer());
-
-		tabuleiro.addKeyListener(new KeyAdapter(){
-			
-			@Override
-			public void keyReleased(KeyEvent e) {
-				try {
-					controle.pressTecla( e.getKeyCode() );
-				} catch (Exception e1) {
-					JOptionPane.showMessageDialog(null, e1.toString());
-				}
-			}
-			
-		});
 		
 		
 		add(tabuleiro, CENTER);
@@ -133,6 +137,8 @@ public class DesafioDoHeroi extends JFrame implements Observador {
 		JPanel jp = new JPanel();
 		jp.setLayout(new FlowLayout());
 		jp.setSize(600, 200);
+                
+                
                 
                 JLabel player = new JLabel("Player 1 será: ");
                 jp.add(player);
@@ -143,24 +149,107 @@ public class DesafioDoHeroi extends JFrame implements Observador {
 		b1.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent ae) {
+                        jdialog = new JDialog(getJFrame(), true);
+                        String player1 = jrAmarelo.isSelected() ? "Amarelo": "Vermelho";
+                        controle.setPlayer1(player1);
                          
-                        JDialog jdialog = new JDialog(getJFrame(), true);
-                        jdialog.setSize(270, 200);
+                        jdialog.setSize(350, 480);
                         jdialog.setLayout(new FlowLayout());
                         jdialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
-                        jdialog.add(new JLabel("Player 1 terá as flores iniciais :"));
-                          
-                        jdialog.add(new JLabel(" " + (new Random().nextInt(8)) +1));
-                        jdialog.add(new JLabel(" " + new Random().nextInt(8) + 1));
-                        jdialog.add(new JLabel(" " + new Random().nextInt(8) + 1));
+                        int [] p1 = controle.sortearNPlayer1();
+                        int[] p2 = controle.sortearNPlayer2();
+                        
+                        florAmarela1 = new JLabel(); 
+                        florAmarela1.setIcon(new ImageIcon("imagens/Amarela.png"));
+                            florAmarela1.addMouseListener(new MouseAdapter() {
+                                public void mouseClicked(MouseEvent e){
+                                       controle.setPlayerFirstNumber(p1[0],"Amarelo");                                   
+                                        florAmarela1.setIcon(new ImageIcon("imagens/" + controle.converteNumero(p1[0]) + ".png"));       
+                                        florAmarela2.setEnabled(false);
+                                        florAmarela3.setEnabled(false);
+                                }
+                            });
+                        
+                             florAmarela2 = new JLabel();
+                            florAmarela2.setIcon(new ImageIcon("imagens/Amarela.png"));
+                            florAmarela2.addMouseListener(new MouseAdapter() {
+                                public void mouseClicked(MouseEvent e){
+                                       controle.setPlayerFirstNumber(p1[1],"Amarelo");
+                                       florAmarela2.setIcon(new ImageIcon("imagens/" + controle.converteNumero(p1[1])+ ".png"));
+                                       florAmarela1.setEnabled(false);
+                                       florAmarela3.setEnabled(false);
+                                }
+                            });
+                        
+                             florAmarela3 = new JLabel();
+                            florAmarela3.setIcon(new ImageIcon("imagens/Amarela.png"));
+                            florAmarela3.addMouseListener(new MouseAdapter() {
+                                public void mouseClicked(MouseEvent e){
+                                       controle.setPlayerFirstNumber(p1[2],"Amarelo");
+                                       florAmarela3.setIcon(new ImageIcon("imagens/" + controle.converteNumero(p1[2])+ ".png"));
+                                       florAmarela1.setEnabled(false);
+                                       florAmarela2.setEnabled(false);
+                                }
+                            });
+                            
+                           florVermelha1 = new JLabel();  
+                            florVermelha1.setIcon(new ImageIcon("imagens/Vermelha.png"));
+                            florVermelha1.addMouseListener(new MouseAdapter() {
+                                public void mouseClicked(MouseEvent e){
+                                       controle.setPlayerFirstNumber(p2[0],"Vermelho");
+                                       florVermelha1.setIcon(new ImageIcon("imagens/" + controle.converteNumero(p2[0])+ ".png"));
+                                       florVermelha2.setEnabled(false);
+                                       florVermelha3.setEnabled(false);
+                                }
+                            });
+
+                            florVermelha2 = new JLabel(); 
+                            florVermelha2.setIcon(new ImageIcon("imagens/Vermelha.png"));
+                            florVermelha2.addMouseListener(new MouseAdapter() {
+                                public void mouseClicked(MouseEvent e){
+                                       controle.setPlayerFirstNumber(p2[1],"Vermelho");
+                                       florVermelha2.setIcon(new ImageIcon("imagens/" + controle.converteNumero(p2[1])+ ".png"));
+                                       florVermelha1.setEnabled(false);
+                                       florVermelha3.setEnabled(false);
+                                }
+                            });
+                             florVermelha3 = new JLabel();
+                            florVermelha3.setIcon(new ImageIcon("imagens/Vermelha.png"));
+                            florVermelha3.addMouseListener(new MouseAdapter() {
+                                public void mouseClicked(MouseEvent e){
+                                       controle.setPlayerFirstNumber(p2[2],"Vermelho");
+                                       florVermelha3.setIcon(new ImageIcon("imagens/" + controle.converteNumero(p2[2])+ ".png"));
+                                       florVermelha1.setEnabled(false);
+                                       florVermelha2.setEnabled(false);
+                                    }
+                            });
+
+                            
+                        jdialog.add(new JLabel("Player1 Escolha uma das flores para iniciar:"));
+                        
+                        if(player1.equalsIgnoreCase("Amarelo")){
+                            jdialog.add(florAmarela1);
+                            jdialog.add(florAmarela2);
+                            jdialog.add(florAmarela3);
+                            }else{                        
+                            jdialog.add(florVermelha1);
+                            jdialog.add(florVermelha2);
+                            jdialog.add(florVermelha3);
+                        }
+
+           
                
-                        jdialog.add(new JLabel("Player 2 terá as flores iniciais :"));
-                          
-                        jdialog.add(new JLabel(" " + (new Random().nextInt(8)) +1));
-                        jdialog.add(new JLabel(" " + new Random().nextInt(8) + 1));
-                        jdialog.add(new JLabel(" " + new Random().nextInt(8) + 1));
-               
+                        jdialog.add(new JLabel("Player2 Escolha uma das flores para iniciar :"));
+                          if(!player1.equalsIgnoreCase("Vermelho")){
+                            jdialog.add(florVermelha1);
+                            jdialog.add(florVermelha2);
+                            jdialog.add(florVermelha3);
+                            }else{
+                                jdialog.add(florAmarela1);
+                                jdialog.add(florAmarela2);
+                                jdialog.add(florAmarela3);
+                        }
                         
                         jdialog.setLocationRelativeTo(getJFrame());
                         jdialog.setVisible(true);
@@ -182,22 +271,7 @@ public class DesafioDoHeroi extends JFrame implements Observador {
 		jrGrupo.add(jrVermelho);
 		jrVermelho.setActionCommand("Vermelho");
 		bgTipoHeroi.add(jrVermelho);
-		
-		ActionListener radioAction = new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent event) {
-				try {
-					controle.setTipoHeroi(event.getActionCommand());
-				} catch (Exception e) {
-					JOptionPane.showMessageDialog(null, e.toString());
-				}
-			}
-		};
-		jrAmarelo.addActionListener(radioAction);
-		jrVermelho.addActionListener(radioAction);
-		radioAction.actionPerformed(new ActionEvent(jrAmarelo, ActionEvent.ACTION_PERFORMED, jrAmarelo.getActionCommand()));
-		
+	
                 jp.add(jrGrupo);
                 jp.add(b1);
                 

@@ -3,6 +3,7 @@ package controle;
 import factory.ConcreteFactory;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import javax.swing.Icon;
 
@@ -12,6 +13,9 @@ import model.RegiaClara;
 import model.Peca;
 
 public class ControleJogoImpl implements ControleJogo {
+        private String player1;
+        private int nPlayer1 = -1;
+        private int nPlayer2 = -1;
         
 	private Peca[][] tabuleiro;
 	private int ultTecla;
@@ -159,5 +163,82 @@ public class ControleJogoImpl implements ControleJogo {
 			obs.fimDeJogo(msgErro);
 	}
 
+    @Override
+    public void jardineiroJunior() {
+        System.out.println("JardJunior");
+        if((this.nPlayer1 != -1 && this.nPlayer2 != -1) && (this.nPlayer1 < this.nPlayer2)){
+            System.out.println("1"); 
+            for(Observador obs: observadores){
+            obs.jardineiroJunior(1);
+            }
+        }else{
+            if(this.nPlayer1 != -1 && this.nPlayer2 != -1){
+                System.out.println("2");
+                for(Observador obs: observadores){
+            obs.jardineiroJunior(2);
+                }
+            }
+         }
+    }
+    
+    @Override
+    public int[] sortearNPlayer1() {
+        Random r = new Random();
+        int [] player1 = new int[3];
+        for(int i=0; i<3; i++){
+            player1[i] = r.nextInt(8) + 1;
+        }
+        return player1;
+    }
+
+    @Override
+    public int[] sortearNPlayer2() {
+        Random r = new Random();
+        int [] player2 = new int[3];
+        for(int i=0; i<3; i++){
+            player2[i] = r.nextInt(8) + 1;
+        }
+        return player2;    
+    }
+    
+    public void setPlayer1(String player1){
+        this.player1 = player1;
+    }
+
+    @Override
+    public void setPlayerFirstNumber(int numero,String player) {
+       
+        if(player.equalsIgnoreCase(this.player1)){
+           if(this.nPlayer1 == -1)
+               this.nPlayer1 = numero;
+           jardineiroJunior();
+        }else{
+            if(this.nPlayer2 == -1)
+              this.nPlayer2 = numero;
+            jardineiroJunior();
+        }
+    }
+
+    @Override
+    public String converteNumero(int i) {
+        String retorno = "";
+        
+        retorno = new Util().numeroExtenso(i);
+        
+        return retorno;
+    }
+
+    @Override
+    public int getNPlayer1() {
+        return this.nPlayer1;
+    }
+
+    @Override
+    public int getNPlayer2() {
+        return this.nPlayer2;
+    }
+
+
+   
 	
 }
