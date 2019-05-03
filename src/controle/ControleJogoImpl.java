@@ -16,7 +16,6 @@ public class ControleJogoImpl implements ControleJogo {
         private String player1;
         private int nPlayer1 = -1;
         private int nPlayer2 = -1;
-        
 	private Peca[][] tabuleiro;
 	private int ultTecla;
 	private String tipoHeroi;
@@ -165,17 +164,14 @@ public class ControleJogoImpl implements ControleJogo {
 
     @Override
     public void jardineiroJunior() {
-        System.out.println("JardJunior");
-        if((this.nPlayer1 != -1 && this.nPlayer2 != -1) && (this.nPlayer1 < this.nPlayer2)){
-            System.out.println("1"); 
+        if((this.nPlayer1 != -1 && this.nPlayer2 != -1) && (this.nPlayer1 < this.nPlayer2)){ 
             for(Observador obs: observadores){
-            obs.jardineiroJunior(1);
+                obs.jardineiroJunior(1);
             }
         }else{
-            if(this.nPlayer1 != -1 && this.nPlayer2 != -1){
-                System.out.println("2");
+            if(this.nPlayer1 != -1 && this.nPlayer2 != -1){  
                 for(Observador obs: observadores){
-            obs.jardineiroJunior(2);
+                    obs.jardineiroJunior(2);
                 }
             }
          }
@@ -207,25 +203,23 @@ public class ControleJogoImpl implements ControleJogo {
 
     @Override
     public void setPlayerFirstNumber(int numero,String player) {
-       
+        for(Observador o: observadores){
+            o.notificarMudancaFlor(numero,player);
+        }
         if(player.equalsIgnoreCase(this.player1)){
            if(this.nPlayer1 == -1)
                this.nPlayer1 = numero;
-           jardineiroJunior();
+                jardineiroJunior();
         }else{
             if(this.nPlayer2 == -1)
               this.nPlayer2 = numero;
-            jardineiroJunior();
+                jardineiroJunior();
         }
     }
 
     @Override
-    public String converteNumero(int i) {
-        String retorno = "";
-        
-        retorno = new Util().numeroExtenso(i);
-        
-        return retorno;
+    public String converteNumero(int i) {  
+        return new Util().numeroExtenso(i);
     }
 
     @Override
@@ -237,8 +231,5 @@ public class ControleJogoImpl implements ControleJogo {
     public int getNPlayer2() {
         return this.nPlayer2;
     }
-
-
-   
 	
 }
