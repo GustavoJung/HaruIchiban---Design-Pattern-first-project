@@ -10,9 +10,11 @@ public interface Observador {
         
         void jardineiroJunior(int player);
 
-    public void notificarMudancaFlor(int numero, String player);
+        void notificarMudancaFlor(int numero, String player);
 
+        void florAmarelaClicked();
         
+        void florVermelhaClicked();
         
         
 }

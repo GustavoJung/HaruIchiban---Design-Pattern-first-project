@@ -31,5 +31,8 @@ public interface ControleJogo {
         int getNPlayer1();
         
         int getNPlayer2();
+
+        void changeFlowers(int i, String amarelo);
  
+        void florClicada(String cor);
 }

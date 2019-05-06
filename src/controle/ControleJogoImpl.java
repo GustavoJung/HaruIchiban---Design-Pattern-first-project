@@ -7,9 +7,6 @@ import java.util.Random;
 
 import javax.swing.Icon;
 
-import model.FundoTabuleiro;
-import model.RegiaEscura;
-import model.RegiaClara;
 import model.Peca;
 
 public class ControleJogoImpl implements ControleJogo {
@@ -203,9 +200,6 @@ public class ControleJogoImpl implements ControleJogo {
 
     @Override
     public void setPlayerFirstNumber(int numero,String player) {
-        for(Observador o: observadores){
-            o.notificarMudancaFlor(numero,player);
-        }
         if(player.equalsIgnoreCase(this.player1)){
            if(this.nPlayer1 == -1)
                this.nPlayer1 = numero;
@@ -231,5 +225,23 @@ public class ControleJogoImpl implements ControleJogo {
     public int getNPlayer2() {
         return this.nPlayer2;
     }
+
+    @Override
+    public void changeFlowers(int num, String cor) {
+        for(Observador obs: observadores){
+        obs.notificarMudancaFlor(num, cor);
+            break;
+        }
+    }
 	
+    @Override
+    public void florClicada(String cor){
+        for(Observador obs: observadores){
+           if(cor.equalsIgnoreCase("Amarelo")){
+               obs.florAmarelaClicked();
+           }else{
+               obs.florVermelhaClicked();
+           }
+        }
+    }
 }
