@@ -24,6 +24,8 @@ public interface ControleJogo {
         
         void setPlayer1(String player1);
         
+        String getPlayer1();
+        
         void setPlayerFirstNumber(int numero, String player);
 
         public String converteNumero(int i);
@@ -35,4 +37,8 @@ public interface ControleJogo {
         void changeFlowers(int i, String amarelo);
  
         void florClicada(String cor);
+
+    public void addListeners();
+
+    public void colocaFlor(String cor, int x, int y);
 }

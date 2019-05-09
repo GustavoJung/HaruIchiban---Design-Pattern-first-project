@@ -29,9 +29,13 @@ import java.awt.event.MouseListener;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.DefaultCellEditor;
 
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
@@ -62,7 +66,8 @@ public class HaruIchiban extends JFrame implements Observador {
         if (SwingUtilities.isEventDispatchThread()) {
             jdialog.add(Jplayer);
             jdialog.validate();
-            jdialog.repaint();      
+            jdialog.repaint();    
+            addListeners();
             startGame(Jplayer);
         }   
     }
@@ -76,6 +81,7 @@ public class HaruIchiban extends JFrame implements Observador {
                 @Override
                 public void actionPerformed(ActionEvent arg0) {
                     tabuleiro.setCellSelectionEnabled(true);
+                    tabuleiro.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
                     jdialog.dispose();
             }
         });
@@ -123,11 +129,10 @@ public class HaruIchiban extends JFrame implements Observador {
 
     @Override
         public void florVermelhaClicked() {
-        removeListenersVermelhos(florVermelha1, florVermelha2, florVermelha2);
-    
-
+        removeListenersVermelhos(florVermelha1, florVermelha2, florVermelha2);  
 }
 
+    
     class HaruTableModel extends AbstractTableModel {
 
     private static final long serialVersionUID = 1L;
@@ -154,7 +159,7 @@ public class HaruIchiban extends JFrame implements Observador {
 
 }
 
-class HeroiRenderer extends DefaultTableCellRenderer {
+    class HeroiRenderer extends DefaultTableCellRenderer {
 
     private static final long serialVersionUID = 1L;
 
@@ -169,7 +174,7 @@ class HeroiRenderer extends DefaultTableCellRenderer {
 
 }
 
-public HaruIchiban() throws Exception {
+    public HaruIchiban() throws Exception {
         this.controle = new ControleJogoImpl();
         this.controle.inicializar();
         this.controle.addObservador(this);
@@ -199,14 +204,13 @@ public HaruIchiban() throws Exception {
         tabuleiro.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         tabuleiro.setShowGrid(false);
         tabuleiro.setIntercellSpacing(new Dimension(0, 0));
-        tabuleiro
-
-.setDefaultRenderer(Object.class
-, new HeroiRenderer());
+        tabuleiro.setDefaultRenderer(Object.class, new HeroiRenderer());
 
         add(tabuleiro, CENTER);
         tabuleiro.setCellSelectionEnabled(false);
 
+         
+        
         JPanel jp = new JPanel();
         jp.setLayout(new FlowLayout());
         jp.setSize(600, 200);
@@ -394,4 +398,13 @@ public HaruIchiban() throws Exception {
             flor3.removeMouseListener(c);
         }
     }
+    
+    private void addListeners() {
+       tabuleiro.addMouseListener(new MouseAdapter(){
+           public void mouseClicked(MouseEvent e) {
+               controle.colocaFlor(controle.getPlayer1(),tabuleiro.getSelectedColumn(),tabuleiro.getSelectedRow());      
+                    }
+                });
+    }
+
 }

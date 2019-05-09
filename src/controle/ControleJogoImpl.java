@@ -1,6 +1,9 @@
 package controle;
 
-import factory.ConcreteFactory;
+import builder.TabuleiroBuilder;
+import builder.TabuleiroConcreto;
+import command.ColocaFlor;
+import command.CommandInvoker;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -8,6 +11,8 @@ import java.util.Random;
 import javax.swing.Icon;
 
 import model.Peca;
+import tabuleiro.Tabuleiro;
+import view.Director;
 
 public class ControleJogoImpl implements ControleJogo {
         private String player1;
@@ -18,7 +23,8 @@ public class ControleJogoImpl implements ControleJogo {
 	private String tipoHeroi;
 	private MovimentoHeroi movimentoHeroi;
 	private List<Observador> observadores = new ArrayList<>();
-	
+	private CommandInvoker commandInvoker;
+        
 	@Override
 	public void addObservador(Observador obs) {
 		observadores.add(obs);
@@ -26,39 +32,11 @@ public class ControleJogoImpl implements ControleJogo {
 	
 	@Override
 	public void inicializar() {
-            ConcreteFactory factory = new ConcreteFactory();
-           
-		tabuleiro = new Peca[5][5];
-		tabuleiro[0][0] = factory.criarRegia();
-		tabuleiro[2][0] = factory.criarRegia();
-		tabuleiro[4][0] = factory.criarRegia();
-                        
-		
-		tabuleiro[1][1] = factory.criarRegia();
-		tabuleiro[2][1] = factory.criarSapoAmarelo();
-                tabuleiro[3][1] = factory.criarRegiaEscura();
-            
-                
-		tabuleiro[0][2] = factory.criarRegia();
-		tabuleiro[1][2] = factory.criarRegia();
-		tabuleiro[3][2] = factory.criarRegia();
-		tabuleiro[4][2] = factory.criarRegia();
-                
-		tabuleiro[1][3] = factory.criarRegia();
-		tabuleiro[2][3] = factory.criarRegia();
-                tabuleiro[3][3] = factory.criarSapoVermelho();
-                
-                tabuleiro[0][4] = factory.criarRegia();
-		tabuleiro[2][4] = factory.criarRegia();
-		tabuleiro[4][4] = factory.criarRegia();
-                
-                for(int i=0; i<5; i++){
-                    for(int j=0; j<5; j++){
-                        if(tabuleiro[i][j]==null){
-                            tabuleiro[i][j] = factory.criarFundoTabuleiro();
-                        }
-                    }
-                }
+            TabuleiroBuilder tabuleiroB = new TabuleiroConcreto();
+            Director director = new Director(tabuleiroB);
+            director.construir();
+            commandInvoker = new CommandInvoker();
+            tabuleiro = tabuleiroB.getTabuleiro().getTabuleiro();
 	}
 
 	@Override
@@ -177,8 +155,8 @@ public class ControleJogoImpl implements ControleJogo {
     @Override
     public int[] sortearNPlayer1() {
         Random r = new Random();
-        int [] player1 = new int[3];
-        for(int i=0; i<3; i++){
+        int [] player1 = new int[8];
+        for(int i=0; i<8; i++){
             player1[i] = r.nextInt(8) + 1;
         }
         return player1;
@@ -187,7 +165,7 @@ public class ControleJogoImpl implements ControleJogo {
     @Override
     public int[] sortearNPlayer2() {
         Random r = new Random();
-        int [] player2 = new int[3];
+        int [] player2 = new int[8];
         for(int i=0; i<3; i++){
             player2[i] = r.nextInt(8) + 1;
         }
@@ -243,5 +221,24 @@ public class ControleJogoImpl implements ControleJogo {
                obs.florVermelhaClicked();
            }
         }
+    }
+
+    @Override
+    public void addListeners() {
+      
+    }
+
+    @Override
+    public void colocaFlor(String cor, int x, int y) {
+        commandInvoker.execute(new ColocaFlor(Tabuleiro.getInstance(), x, y, cor));
+        for(Observador obs: observadores){
+            obs.mudouTabuleiro();
+        }
+                
+    }
+
+    @Override
+    public String getPlayer1() {
+        return this.player1;
     }
 }
