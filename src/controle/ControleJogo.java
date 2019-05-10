@@ -18,13 +18,21 @@ public interface ControleJogo {
         
         void jardineiroJunior();
         
-        int[] sortearNPlayer1();
+        void sortearNPlayer1();
         
-        int[] sortearNPlayer2();
+        void sortearNPlayer2();
         
         void setPlayer1(String player1);
         
+        void setPlayer2(String player2);
+        
         String getPlayer1();
+        
+        String getPlayer2();
+        
+        String getJardineiroJ();
+        
+        String getJardineiroS();
         
         void setPlayerFirstNumber(int numero, String player);
 
@@ -38,7 +46,17 @@ public interface ControleJogo {
  
         void florClicada(String cor);
 
-    public void addListeners();
+      
 
-    public void colocaFlor(String cor, int x, int y);
+        void colocaFlor(String cor, int x, int y);
+        
+        int[] getp1();
+        
+        int[] getp2();
+
+    public void jogoIniciou();
+
+    public void primeiraRodada();
+
+    public void floracaoAutomatica();
 }

@@ -15,6 +15,15 @@ public interface Observador {
         void florAmarelaClicked();
         
         void florVermelhaClicked();
+
+        void notifcarJogoIniciou();
+
+        void notificarFloracaoAutomatica();
         
+        void notificarJogadaAconteceu(String acaoAtual);
+
+    public void notificarColocarSapo();
+
+    public void removeListener();
         
 }

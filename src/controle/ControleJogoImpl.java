@@ -16,6 +16,10 @@ import view.Director;
 
 public class ControleJogoImpl implements ControleJogo {
         private String player1;
+        private String player2;
+        private String jardineiroJunior;
+        private String jardineiroSenior;
+        private String acaoAtual;
         private int nPlayer1 = -1;
         private int nPlayer2 = -1;
 	private Peca[][] tabuleiro;
@@ -24,6 +28,9 @@ public class ControleJogoImpl implements ControleJogo {
 	private MovimentoHeroi movimentoHeroi;
 	private List<Observador> observadores = new ArrayList<>();
 	private CommandInvoker commandInvoker;
+        int[] p1;
+        int[] p2;
+        
         
 	@Override
 	public void addObservador(Observador obs) {
@@ -140,11 +147,19 @@ public class ControleJogoImpl implements ControleJogo {
     @Override
     public void jardineiroJunior() {
         if((this.nPlayer1 != -1 && this.nPlayer2 != -1) && (this.nPlayer1 < this.nPlayer2)){ 
+            jardineiroJunior = player1;
+            jardineiroSenior = player2;
             for(Observador obs: observadores){
                 obs.jardineiroJunior(1);
             }
-        }else{
+        }else if((this.nPlayer1 != -1 && this.nPlayer2 != -1) && (this.nPlayer1 == this.nPlayer2)){
+            for(Observador obs: observadores){
+                obs.jardineiroJunior(0);
+            }
+    }else{
             if(this.nPlayer1 != -1 && this.nPlayer2 != -1){  
+                jardineiroJunior = player2;
+                jardineiroSenior = player1;
                 for(Observador obs: observadores){
                     obs.jardineiroJunior(2);
                 }
@@ -153,27 +168,49 @@ public class ControleJogoImpl implements ControleJogo {
     }
     
     @Override
-    public int[] sortearNPlayer1() {
+    public void sortearNPlayer1() {
         Random r = new Random();
         int [] player1 = new int[8];
+        int random = -1;
         for(int i=0; i<8; i++){
-            player1[i] = r.nextInt(8) + 1;
+            random = r.nextInt(8) + 1;
+            if(!new Util().numExiste(player1, random)){
+              player1[i] =random;
+            }else{
+                i--;
+            }
         }
-        return player1;
+        p1= player1;
     }
 
     @Override
-    public int[] sortearNPlayer2() {
+    public void sortearNPlayer2() {
         Random r = new Random();
         int [] player2 = new int[8];
-        for(int i=0; i<3; i++){
-            player2[i] = r.nextInt(8) + 1;
+        int random = -1;
+        
+        for(int i=0; i<8; i++){
+          random = r.nextInt(8)+1;
+          if(!new Util().numExiste(player2, random)){ 
+            player2[i] = random;
+          }else{
+              i--;
+          }
         }
-        return player2;    
+        p2 = player2;    
     }
     
+    @Override
     public void setPlayer1(String player1){
-        this.player1 = player1;
+        this.player1 = player1;   
+        System.out.println( "p1" + this.player1);
+    }
+    
+    @Override
+    public void setPlayer2(String player2){
+            this.player2 = player2;
+            System.out.println("p2" + this.player2);
+            
     }
 
     @Override
@@ -223,22 +260,87 @@ public class ControleJogoImpl implements ControleJogo {
         }
     }
 
-    @Override
-    public void addListeners() {
-      
-    }
 
     @Override
     public void colocaFlor(String cor, int x, int y) {
+        String sapo =new Util().temSapo(x, y);
+        
         commandInvoker.execute(new ColocaFlor(Tabuleiro.getInstance(), x, y, cor));
         for(Observador obs: observadores){
             obs.mudouTabuleiro();
+            obs.removeListener();
         }
-                
+        
+        if(!sapo.equalsIgnoreCase("")){
+            System.out.println("coloca sapo");
+            colocaSapo(sapo); 
+        }        
     }
 
     @Override
     public String getPlayer1() {
         return this.player1;
+    }
+
+    @Override
+    public int[] getp1() {
+        return this.p1;
+    }
+
+    @Override
+    public int[] getp2() {
+        return this.p2;
+    }
+
+    @Override
+   public void jogoIniciou(){
+       if(this.jardineiroJunior != null && this.jardineiroSenior != null){
+           this.acaoAtual = "Posicione sua flor!"; 
+           for(Observador obs: observadores){
+                obs.notifcarJogoIniciou();
+            }
+       }
+   }
+
+    @Override
+    public void primeiraRodada() {
+        int [] regiaEscura = new Util().getRegiaEscura();
+       commandInvoker.execute(new ColocaFlor(Tabuleiro.getInstance(), regiaEscura[0],regiaEscura[1], jardineiroJunior));
+       for(Observador obs: observadores){
+           obs.notificarJogadaAconteceu(acaoAtual);
+       }
+    }
+
+    @Override
+    public String getPlayer2() {
+        return this.player2;
+    }
+
+    @Override
+    public String getJardineiroJ() {
+        return this.jardineiroJunior;
+    }
+
+    @Override
+    public String getJardineiroS() {
+        return this.jardineiroSenior;
+    }
+
+    @Override
+    public void floracaoAutomatica() {
+       int sapoAmarelo[] = new Util().getSapoAmarelo();
+       int sapoVermelho[] = new Util().getSapoVermelho();
+       commandInvoker.execute(new ColocaFlor(Tabuleiro.getInstance(), sapoAmarelo[0], sapoAmarelo[1], "Amarelo"));
+       commandInvoker.execute(new ColocaFlor(Tabuleiro.getInstance(), sapoVermelho[0], sapoVermelho[1], "Vermelho"));
+       for(Observador obs: observadores){
+           obs.notificarFloracaoAutomatica();
+       }
+    }
+
+    private void colocaSapo(String sapo) {
+        for(Observador obs: observadores){
+            obs.notificarColocarSapo();
+        }
+        
     }
 }

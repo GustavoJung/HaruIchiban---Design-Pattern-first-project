@@ -16,5 +16,9 @@ public class Flor extends Peca{
     public Flor(Icon imagem) {
         super(imagem);
     }
+
+  
+
+ 
     
 }

@@ -18,4 +18,5 @@ public class FlorAmarela extends Flor{
         super(new ImageIcon("imagens/florAmarela.png"));
     }
     
+  
 }

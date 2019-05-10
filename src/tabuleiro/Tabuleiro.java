@@ -8,6 +8,8 @@ package tabuleiro;
 import model.FlorAmarela;
 import model.FlorVermelha;
 import model.Peca;
+import model.SapoAmarelo;
+import model.SapoVermelho;
 
 /**
  *
@@ -35,10 +37,20 @@ public class Tabuleiro {
 	}
 
     public void colocaFlor(int x, int y, String cor) {
-        if(!cor.equalsIgnoreCase("Vermelho"))
+        System.out.println("coloca flor cor " + cor);
+        if(cor.equalsIgnoreCase("Vermelho"))
             tabuleiro[x][y] = new FlorVermelha();
         else
             tabuleiro[x][y] = new FlorAmarela();
+            
+    }
+    
+    public void colocaSapo(int x, int y, String cor){
+        System.out.println("coloca sapo cor " + cor);
+        if(cor.equalsIgnoreCase("Vermelho"))
+            tabuleiro[x][y] = new SapoVermelho();
+        else
+            tabuleiro[x][y] = new SapoAmarelo();
             
     }
 

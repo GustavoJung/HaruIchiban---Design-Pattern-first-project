@@ -26,16 +26,10 @@ import java.awt.FlowLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.DefaultCellEditor;
 
 import javax.swing.JDialog;
 import javax.swing.JLabel;
-import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
@@ -44,6 +38,7 @@ public class HaruIchiban extends JFrame implements Observador {
     private ControleJogo controle;
     private JTable tabuleiro;
     private JLabel Jplayer;
+    private JPanel jp;
     private JRadioButton jrVermelho;
     private JRadioButton jrAmarelo;
     private JLabel jardineiroJunior;
@@ -56,24 +51,27 @@ public class HaruIchiban extends JFrame implements Observador {
     private JLabel florVermelha3;
     private static final long serialVersionUID = 1L;
     private ScheduledExecutorService executorService;
-    int[] p1;
-    int[] p2;
+    private JLabel turno;
 
     @Override
     public void jardineiroJunior(int player) {
-        Jplayer = new JLabel("O Player " + player + " será o primeiro a jogar! Boa Sorte!");
         
+        if(player != 0){
+            Jplayer = new JLabel("O Player " + player + " será o primeiro a jogar! Boa Sorte!");        
+        }else{
+            Jplayer = new JLabel("FLORAÇÃO AUTOMÁTICA!!");
+            controle.floracaoAutomatica();
+        }
         if (SwingUtilities.isEventDispatchThread()) {
-            jdialog.add(Jplayer);
-            jdialog.validate();
-            jdialog.repaint();    
-            addListeners();
-            startGame(Jplayer);
-        }   
+                jdialog.add(Jplayer);
+                jdialog.validate();
+                jdialog.repaint();    
+                startGame(Jplayer);
+            }
     }
     
    private void startGame(JLabel label){
-            SwingUtilities.invokeLater(new Runnable() {
+        SwingUtilities.invokeLater(new Runnable() {
                 @Override
                 public void run() {
                     
@@ -83,7 +81,8 @@ public class HaruIchiban extends JFrame implements Observador {
                     tabuleiro.setCellSelectionEnabled(true);
                     tabuleiro.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
                     jdialog.dispose();
-            }
+                    controle.jogoIniciou();
+                }                   
         });
         t.setRepeats(false);
         t.start();
@@ -91,7 +90,19 @@ public class HaruIchiban extends JFrame implements Observador {
     });
    } 
    
-
+    @Override
+    public void notificarJogadaAconteceu(String acaoAtual){
+       remove(jp);
+       jp = new JPanel();
+       jp.setLayout(new FlowLayout());
+       
+       turno = new JLabel("Turno do player " + controle.getJardineiroS() + " - " + acaoAtual);
+       jp.add(turno);
+       add(jp,SOUTH);
+       validate();
+       repaint();
+    }
+   
 @Override
         public void notificarMudancaFlor(int numero, String player) {
         switch (player) {
@@ -131,6 +142,28 @@ public class HaruIchiban extends JFrame implements Observador {
         public void florVermelhaClicked() {
         removeListenersVermelhos(florVermelha1, florVermelha2, florVermelha2);  
 }
+
+    @Override
+    public void notifcarJogoIniciou() {
+       controle.primeiraRodada();
+        addListeners();
+      
+    }
+
+    @Override
+    public void notificarFloracaoAutomatica() {
+        mudouTabuleiro();
+    }
+
+    @Override
+    public void notificarColocarSapo() {
+       tabuleiro.removeMouseListener(mTabuleiro);
+    }
+
+    @Override
+    public void removeListener() {
+        tabuleiro.removeMouseListener(mTabuleiro);
+    }
 
     
     class HaruTableModel extends AbstractTableModel {
@@ -208,10 +241,10 @@ public class HaruIchiban extends JFrame implements Observador {
 
         add(tabuleiro, CENTER);
         tabuleiro.setCellSelectionEnabled(false);
-
-         
+        controle.sortearNPlayer1();
+        controle.sortearNPlayer2();
         
-        JPanel jp = new JPanel();
+         jp = new JPanel();
         jp.setLayout(new FlowLayout());
         jp.setSize(600, 200);
 
@@ -226,71 +259,71 @@ public class HaruIchiban extends JFrame implements Observador {
         public void actionPerformed(ActionEvent ae) {
                 jdialog = new JDialog(getJFrame(), true);
                 String player1 = jrAmarelo.isSelected() ? "Amarelo" : "Vermelho";
+                String player2 = jrAmarelo.isSelected() ? "Vermelho" : "Amarelo";
                 controle.setPlayer1(player1);
+                controle.setPlayer2(player2);
 
-                jdialog.setSize(350, 350);
+                jdialog.setSize(350, 300);
                 jdialog.setLayout(new FlowLayout());
-                jdialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-
-                p1 = controle.sortearNPlayer1();
-                p2 = controle.sortearNPlayer2();
+                jdialog.setUndecorated(true);
+                jdialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);       
 
                 florAmarela1 = new JLabel();
-                florAmarela1.setIcon(new ImageIcon("imagens/" + controle.converteNumero(p1[0]) + ".png"));
+                florAmarela1.setIcon(new ImageIcon("imagens/" + controle.converteNumero(controle.getp1()[0]) + ".png"));
                 florAmarela1.addMouseListener(new MouseAdapter() {
                     public void mouseClicked(MouseEvent e) {
                         controle.florClicada("Amarelo");
-                        controle.setPlayerFirstNumber(p1[0], "Amarelo");
+                        controle.setPlayerFirstNumber(controle.getp1()[0], "Amarelo");
                         controle.changeFlowers(1, "Amarelo");
                     }
                 });
 
                 florAmarela2 = new JLabel();
-                florAmarela2.setIcon(new ImageIcon("imagens/" + controle.converteNumero(p1[1]) + ".png"));
+                florAmarela2.setIcon(new ImageIcon("imagens/" + controle.converteNumero(controle.getp1()[1]) + ".png"));
                 florAmarela2.addMouseListener(new MouseAdapter() {
                     public void mouseClicked(MouseEvent e) {
                         controle.florClicada("Amarelo");
-                        controle.setPlayerFirstNumber(p1[1], "Amarelo");
+                        controle.setPlayerFirstNumber(controle.getp1()[1], "Amarelo");
                         controle.changeFlowers(2, "Amarelo");
                     }
                 });
 
                 florAmarela3 = new JLabel();
-                florAmarela3.setIcon(new ImageIcon("imagens/" + controle.converteNumero(p1[2]) + ".png"));
+                florAmarela3.setIcon(new ImageIcon("imagens/" + controle.converteNumero(controle.getp1()[2]) + ".png"));
                 florAmarela3.addMouseListener(new MouseAdapter() {
                     public void mouseClicked(MouseEvent e) {
                         controle.florClicada("Amarelo");
-                        controle.setPlayerFirstNumber(p1[2], "Amarelo");
+                        controle.setPlayerFirstNumber(controle.getp1()[2], "Amarelo");
                         controle.changeFlowers(3, "Amarelo");
                     }
                 });
 
                 florVermelha1 = new JLabel();
-                florVermelha1.setIcon(new ImageIcon("imagens/" + controle.converteNumero(p2[0]) + ".png"));
+                florVermelha1.setIcon(new ImageIcon("imagens/" + controle.converteNumero(controle.getp2()[0]) + ".png"));
                 florVermelha1.addMouseListener(new MouseAdapter() {
                     public void mouseClicked(MouseEvent e) {
                         controle.florClicada("Vermelho");
-                        controle.setPlayerFirstNumber(p2[0], "Vermelho");
+                        controle.setPlayerFirstNumber(controle.getp2()[0], "Vermelho");
                         controle.changeFlowers(1, "Vermelho");
                     }
                 });
 
                 florVermelha2 = new JLabel();
-                florVermelha2.setIcon(new ImageIcon("imagens/" + controle.converteNumero(p2[1]) + ".png"));
+                florVermelha2.setIcon(new ImageIcon("imagens/" + controle.converteNumero(controle.getp2()[1]) + ".png"));
                 florVermelha2.addMouseListener(new MouseAdapter() {
                     public void mouseClicked(MouseEvent e) {
                         controle.florClicada("Vermelho");
-                        controle.setPlayerFirstNumber(p2[1], "Vermelho");
+                        controle.setPlayerFirstNumber(controle.getp2()[1], "Vermelho");
                         controle.changeFlowers(2, "Vermelho");
                     }
                 });
 
                 florVermelha3 = new JLabel();
-                florVermelha3.setIcon(new ImageIcon("imagens/" + controle.converteNumero(p2[2]) + ".png"));
+                florVermelha3.setIcon(new ImageIcon("imagens/" + controle.converteNumero(controle.getp2()[2]) + ".png"));
                 florVermelha3.addMouseListener(new MouseAdapter() {
                     public void mouseClicked(MouseEvent e) {
                         controle.florClicada("Vermelho");
-                        controle.setPlayerFirstNumber(p2[2], "Vermelho");
+                        controle.setPlayerFirstNumber(controle.getp2()[2], "Vermelho");
                         controle.changeFlowers(3, "Vermelho");
                     }
                 });
@@ -400,11 +433,18 @@ public class HaruIchiban extends JFrame implements Observador {
     }
     
     private void addListeners() {
-       tabuleiro.addMouseListener(new MouseAdapter(){
-           public void mouseClicked(MouseEvent e) {
-               controle.colocaFlor(controle.getPlayer1(),tabuleiro.getSelectedColumn(),tabuleiro.getSelectedRow());      
-                    }
-                });
+//       tabuleiro.addMouseListener(new MouseAdapter(){
+//           public void mouseClicked(MouseEvent e) {
+//                   }
+//                });
+        tabuleiro.addMouseListener(mTabuleiro);
     }
+    
+    MouseListener mTabuleiro = new MouseAdapter() {
+        public void mouseClicked(MouseEvent e){
+            controle.colocaFlor(controle.getJardineiroS(),tabuleiro.getSelectedColumn(),tabuleiro.getSelectedRow());      
+                
+        }
+    };
 
 }
