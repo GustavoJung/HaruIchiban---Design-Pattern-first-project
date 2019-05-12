@@ -22,12 +22,14 @@ import controle.ControleJogo;
 import controle.ControleJogoImpl;
 import controle.Observador;
 import java.awt.Button;
+import java.awt.Color;
 import java.awt.FlowLayout;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.concurrent.ScheduledExecutorService;
-
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
@@ -50,7 +52,6 @@ public class HaruIchiban extends JFrame implements Observador {
     private JLabel florVermelha2;
     private JLabel florVermelha3;
     private static final long serialVersionUID = 1L;
-    private ScheduledExecutorService executorService;
     private JLabel turno;
 
     @Override
@@ -88,19 +89,13 @@ public class HaruIchiban extends JFrame implements Observador {
         t.start();
     }
     });
-   } 
+   }
+  
    
     @Override
     public void notificarJogadaAconteceu(String acaoAtual){
-       remove(jp);
-       jp = new JPanel();
-       jp.setLayout(new FlowLayout());
-       
-       turno = new JLabel("Turno do player " + controle.getJardineiroS() + " - " + acaoAtual);
-       jp.add(turno);
-       add(jp,SOUTH);
-       validate();
-       repaint();
+        alteraDialog(acaoAtual);
+        mudouTabuleiro();
     }
    
 @Override
@@ -156,13 +151,50 @@ public class HaruIchiban extends JFrame implements Observador {
     }
 
     @Override
-    public void notificarColocarSapo() {
-       tabuleiro.removeMouseListener(mTabuleiro);
+    public void notificarColocarSapo(String acao) {           
+        tabuleiro.removeMouseListener(listenerColocaFlor);
+        tabuleiro.addMouseListener(listenerColocaSapo);
+        alteraDialog(acao);
     }
 
     @Override
     public void removeListener() {
-        tabuleiro.removeMouseListener(mTabuleiro);
+        tabuleiro.removeMouseListener(listenerColocaFlor);
+        tabuleiro.removeMouseListener(listenerColocaSapo);
+        tabuleiro.removeMouseListener(listenerColocaRegiaEscura);
+        tabuleiro.removeKeyListener(listenerMoveCells);
+    }
+
+    @Override
+    public void notificarSelecionouCelula(int selectedColumn, int selectedRow) {
+       tabuleiro.setSelectionForeground(Color.lightGray);
+       mudouTabuleiro();
+    }
+
+    @Override
+    public void notificarColocouFlor(String acao) {
+        tabuleiro.removeMouseListener(listenerColocaFlor);
+        tabuleiro.addKeyListener(listenerMoveCells);
+        alteraDialog(acao);
+    }
+
+    @Override
+    public void notificarMoveuCelula(String acaoAtual) {
+    tabuleiro.removeKeyListener(listenerMoveCells);
+        alteraDialog(acaoAtual);
+        //controle.verificaPontos();
+        tabuleiro.addMouseListener(listenerColocaRegiaEscura);
+        
+    }
+
+    @Override
+    public void notificarFlorLocalErrado(String acaoAtual) {
+        alteraDialog(acaoAtual);
+    }
+
+    @Override
+    public void notificarNovaRegiaEscura(String acaoAtual) {
+        //alteraDialog(acaoAtual);
     }
 
     
@@ -437,14 +469,46 @@ public class HaruIchiban extends JFrame implements Observador {
 //           public void mouseClicked(MouseEvent e) {
 //                   }
 //                });
-        tabuleiro.addMouseListener(mTabuleiro);
+        tabuleiro.addMouseListener(listenerColocaFlor);
     }
     
-    MouseListener mTabuleiro = new MouseAdapter() {
+    MouseListener listenerColocaFlor = new MouseAdapter() {
         public void mouseClicked(MouseEvent e){
-            controle.colocaFlor(controle.getJardineiroS(),tabuleiro.getSelectedColumn(),tabuleiro.getSelectedRow());      
-                
+            controle.colocaFlor(controle.getJardineiroS(),tabuleiro.getSelectedColumn(),tabuleiro.getSelectedRow());              
+        }
+    };
+    
+    MouseListener listenerColocaSapo = new MouseAdapter() {
+        public void mouseClicked(MouseEvent e){
+            controle.posicionaSapo(controle.getSapoClicked(),tabuleiro.getSelectedColumn(),tabuleiro.getSelectedRow());
+            removeListener();
+            tabuleiro.addKeyListener(listenerMoveCells);
+        }
+    };
+    
+    MouseListener listenerColocaRegiaEscura = new MouseAdapter(){
+        public void mouseClicked(MouseEvent e){
+            controle.novaRegiaEscura(tabuleiro.getSelectedColumn(),tabuleiro.getSelectedRow());
+            removeListener();
+        }
+    };
+    
+    KeyListener listenerMoveCells = new KeyAdapter() {
+        public void keyPressed(KeyEvent k){
+            controle.selecionaCelulaMovimentar(tabuleiro.getSelectedColumn(),tabuleiro.getSelectedRow());
+            controle.moveCells(tabuleiro.getSelectedRow(), tabuleiro.getSelectedColumn(), k.getKeyCode());
         }
     };
 
+    private void alteraDialog(String acao){
+        remove(jp);
+       jp = new JPanel();
+       jp.setLayout(new FlowLayout());
+       
+       turno = new JLabel("Turno do player " + controle.getJardineiroS() + " - " + acao);
+       jp.add(turno);
+       add(jp,SOUTH);
+       validate();
+       repaint();
+    }
 }

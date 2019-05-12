@@ -114,4 +114,13 @@ public class Util {
          return retorno;
      }
      
+     public boolean naoFundo(int x, int y){
+         boolean retorno = true;
+         
+         if(Tabuleiro.getInstance().getTabuleiro()[x][y].getImagem().toString().equalsIgnoreCase("imagens/fundoTabuleiro.png"))
+             retorno = false;
+         
+         return retorno;
+     }
+     
 }

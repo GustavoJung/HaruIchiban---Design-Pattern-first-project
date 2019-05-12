@@ -3,7 +3,10 @@ package controle;
 import builder.TabuleiroBuilder;
 import builder.TabuleiroConcreto;
 import command.ColocaFlor;
+import command.ColocaSapo;
 import command.CommandInvoker;
+import command.MoveNenufar;
+import command.NovaRegiaEscura;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -20,6 +23,7 @@ public class ControleJogoImpl implements ControleJogo {
         private String jardineiroJunior;
         private String jardineiroSenior;
         private String acaoAtual;
+        private String corSapoClicked = "";
         private int nPlayer1 = -1;
         private int nPlayer2 = -1;
 	private Peca[][] tabuleiro;
@@ -126,23 +130,7 @@ public class ControleJogoImpl implements ControleJogo {
 		this.tipoHeroi = tipoHeroi;
 	}
 
-	private void notificarIniciouJogo() {
-		
-		for (Observador obs:observadores)
-			obs.iniciouJogo();
-	}
-
-	private void notificarMudancaTabuleiro() {
-		
-		for (Observador obs:observadores)
-			obs.mudouTabuleiro();
-		
-	}
 	
-	private void notificarFimJogo(String msgErro) {
-		for (Observador obs:observadores)
-			obs.fimDeJogo(msgErro);
-	}
 
     @Override
     public void jardineiroJunior() {
@@ -203,15 +191,12 @@ public class ControleJogoImpl implements ControleJogo {
     @Override
     public void setPlayer1(String player1){
         this.player1 = player1;   
-        System.out.println( "p1" + this.player1);
-    }
+        }
     
     @Override
     public void setPlayer2(String player2){
             this.player2 = player2;
-            System.out.println("p2" + this.player2);
-            
-    }
+     }
 
     @Override
     public void setPlayerFirstNumber(int numero,String player) {
@@ -263,18 +248,36 @@ public class ControleJogoImpl implements ControleJogo {
 
     @Override
     public void colocaFlor(String cor, int x, int y) {
-        String sapo =new Util().temSapo(x, y);
-        
-        commandInvoker.execute(new ColocaFlor(Tabuleiro.getInstance(), x, y, cor));
+        if(new Util().naoFundo(x, y)){
+            if(!new Util().temSapo(x, y).equalsIgnoreCase("")){
+                corSapoClicked = new Util().temSapo(x,y).substring(4);
+                acaoAtual = "Posicione o sapo " + this.corSapoClicked + "!";
+                commandInvoker.execute(new ColocaFlor(Tabuleiro.getInstance(), x, y, cor));  
+                colocaSapo(this.corSapoClicked); 
+            }else{
+               commandInvoker.execute(new ColocaFlor(Tabuleiro.getInstance(), x, y, cor));
+               acaoAtual = "Selecione a régia que deseja movimentar!!";
+               notificaRemoveListenerFlor(acaoAtual);
+            }                      
+                for(Observador obs: observadores){
+                    obs.mudouTabuleiro();
+                } 
+            }else{
+            acaoAtual = "Impossível colocar flor na lagoa! Coloque numa regia!";
+                notificarFlorLocalInvalido(acaoAtual);
+                
+            }
+        }
+    
+    
+    @Override
+    public void posicionaSapo(String cor, int x, int y){
+        commandInvoker.execute(new ColocaSapo(Tabuleiro.getInstance(), x, y, cor));
+        acaoAtual = "Selecione a régia que deseja movimentar!!";
         for(Observador obs: observadores){
-            obs.mudouTabuleiro();
+            obs.notificarJogadaAconteceu(acaoAtual);
             obs.removeListener();
         }
-        
-        if(!sapo.equalsIgnoreCase("")){
-            System.out.println("coloca sapo");
-            colocaSapo(sapo); 
-        }        
     }
 
     @Override
@@ -296,20 +299,20 @@ public class ControleJogoImpl implements ControleJogo {
    public void jogoIniciou(){
        if(this.jardineiroJunior != null && this.jardineiroSenior != null){
            this.acaoAtual = "Posicione sua flor!"; 
-           for(Observador obs: observadores){
-                obs.notifcarJogoIniciou();
-            }
+           notificarJogoIniciou();
        }
    }
+   
+   
 
     @Override
     public void primeiraRodada() {
         int [] regiaEscura = new Util().getRegiaEscura();
        commandInvoker.execute(new ColocaFlor(Tabuleiro.getInstance(), regiaEscura[0],regiaEscura[1], jardineiroJunior));
-       for(Observador obs: observadores){
-           obs.notificarJogadaAconteceu(acaoAtual);
-       }
+        notificarJogadaAconteceu();
     }
+    
+    
 
     @Override
     public String getPlayer2() {
@@ -332,15 +335,101 @@ public class ControleJogoImpl implements ControleJogo {
        int sapoVermelho[] = new Util().getSapoVermelho();
        commandInvoker.execute(new ColocaFlor(Tabuleiro.getInstance(), sapoAmarelo[0], sapoAmarelo[1], "Amarelo"));
        commandInvoker.execute(new ColocaFlor(Tabuleiro.getInstance(), sapoVermelho[0], sapoVermelho[1], "Vermelho"));
-       for(Observador obs: observadores){
+       notificarFloracaoAutomatica();
+    }
+
+    private void notificarFloracaoAutomatica(){
+        for(Observador obs: observadores){
            obs.notificarFloracaoAutomatica();
        }
     }
-
+    
     private void colocaSapo(String sapo) {
         for(Observador obs: observadores){
-            obs.notificarColocarSapo();
+            obs.notificarColocarSapo(this.acaoAtual);
         }
         
     }
+    
+    private void notificarIniciouJogo() {
+		for (Observador obs:observadores)
+			obs.iniciouJogo();
+	}
+
+	private void notificarMudancaTabuleiro() {
+		for (Observador obs:observadores)
+			obs.mudouTabuleiro();
+		
+	}
+	
+	private void notificarFimJogo(String msgErro) {
+		for (Observador obs:observadores)
+			obs.fimDeJogo(msgErro);
+	}
+        
+        private void notificarJogoIniciou(){
+            for(Observador obs: observadores){
+                obs.notifcarJogoIniciou();
+            }
+        }
+        
+        private void notificarJogadaAconteceu(){
+         for(Observador obs: observadores){
+            obs.notificarJogadaAconteceu(acaoAtual);
+            }
+        }
+
+    @Override
+    public String getSapoClicked() {
+        return this.corSapoClicked;
+    }
+
+    @Override
+    public void moveCells(int selectedRow, int selectedColumn, int keyCode) {
+        commandInvoker.execute(new MoveNenufar(Tabuleiro.getInstance(), selectedColumn, selectedRow, player1, keyCode));
+        notificarMoveuCelula(this.acaoAtual);
+    }
+
+    @Override
+    public void selecionaCelulaMovimentar(int selectedColumn, int selectedRow) {
+        this.acaoAtual = "Selecione a regia que deseja movimentar!";
+        for(Observador obs: observadores){
+            obs.notificarSelecionouCelula(selectedColumn, selectedRow);
+        }
+    }
+
+    private void notificaRemoveListenerFlor(String acao) {
+        for(Observador obs: observadores){
+            obs.notificarColocouFlor(acao);
+        }
+    }
+
+    private void notificarMoveuCelula(String acaoAtual) {
+        acaoAtual = " Jardineiro Sênior: Escolha uma nova régia escura!";
+        for(Observador obs: observadores){
+            obs.notificarMoveuCelula(acaoAtual);
+        }     
+    }
+
+    private void notificarFlorLocalInvalido(String acaoAtual) {
+        for(Observador obs: observadores){
+            obs.notificarFlorLocalErrado(acaoAtual);
+        }
+    }
+
+    @Override
+    public void novaRegiaEscura(int x, int y) {
+        
+        notificarNovaRegiaEscura();
+        commandInvoker.execute(new NovaRegiaEscura(Tabuleiro.getInstance(), x, y, player1));
+    }
+
+    private void notificarNovaRegiaEscura() {
+        for(Observador obs: observadores){
+            obs.mudouTabuleiro();
+                        obs.notificarNovaRegiaEscura(acaoAtual);
+        }
+    }
+
+    
 }

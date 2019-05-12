@@ -7,7 +7,9 @@ package tabuleiro;
 
 import model.FlorAmarela;
 import model.FlorVermelha;
+import model.FundoTabuleiro;
 import model.Peca;
+import model.RegiaEscura;
 import model.SapoAmarelo;
 import model.SapoVermelho;
 
@@ -46,12 +48,46 @@ public class Tabuleiro {
     }
     
     public void colocaSapo(int x, int y, String cor){
-        System.out.println("coloca sapo cor " + cor);
         if(cor.equalsIgnoreCase("Vermelho"))
             tabuleiro[x][y] = new SapoVermelho();
         else
             tabuleiro[x][y] = new SapoAmarelo();
             
+    }
+    
+    public void moveNenufar(int x, int y, int key){
+        Peca aux = null;
+        switch(key){
+            case 39:
+                
+                 aux = tabuleiro[x][y];
+                tabuleiro[x][y] = new FundoTabuleiro();
+                tabuleiro[x+1][y] = aux;
+                break;
+            case 37:
+                
+                 aux = tabuleiro[x][y];
+                tabuleiro[x][y] = new FundoTabuleiro();
+                tabuleiro[x-1][y] = aux;
+                break;
+            case 38:
+               
+                aux = tabuleiro[x][y];
+                tabuleiro[x][y] = new FundoTabuleiro();
+                tabuleiro[x][y-1] = aux;
+                break;
+            case 40:
+              
+                 aux = tabuleiro[x][y];
+                tabuleiro[x][y] = new FundoTabuleiro();
+                tabuleiro[x][y+1] = aux;
+                break;
+        }
+        
+    }
+
+    public void novaRegiaEscura(int x, int y) {
+        tabuleiro[x][y] = new RegiaEscura();
     }
 
     

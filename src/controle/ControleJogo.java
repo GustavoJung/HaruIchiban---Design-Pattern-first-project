@@ -36,7 +36,7 @@ public interface ControleJogo {
         
         void setPlayerFirstNumber(int numero, String player);
 
-        public String converteNumero(int i);
+        String converteNumero(int i);
         
         int getNPlayer1();
         
@@ -46,7 +46,7 @@ public interface ControleJogo {
  
         void florClicada(String cor);
 
-      
+        void posicionaSapo(String cor, int x, int y);
 
         void colocaFlor(String cor, int x, int y);
         
@@ -54,9 +54,19 @@ public interface ControleJogo {
         
         int[] getp2();
 
-    public void jogoIniciou();
+        void jogoIniciou();
 
-    public void primeiraRodada();
+        void primeiraRodada();
 
-    public void floracaoAutomatica();
+        void floracaoAutomatica();
+        
+        String getSapoClicked();
+
+    public void moveCells(int selectedRow, int selectedColumn, int keyCode);
+
+    public void selecionaCelulaMovimentar(int selectedColumn, int selectedRow);
+
+    public void novaRegiaEscura(int x, int y);
+
+   
 }

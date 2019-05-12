@@ -22,8 +22,18 @@ public interface Observador {
         
         void notificarJogadaAconteceu(String acaoAtual);
 
-    public void notificarColocarSapo();
+    public void notificarColocarSapo(String acao);
 
     public void removeListener();
+
+    public void notificarSelecionouCelula(int selectedColumn, int selectedRow);
+
+    public void notificarColocouFlor(String acao);
+
+    public void notificarMoveuCelula(String acaoAtual);
+
+    public void notificarFlorLocalErrado(String acaoAtual);
+    
+    void notificarNovaRegiaEscura(String acaoAtual);
         
 }
