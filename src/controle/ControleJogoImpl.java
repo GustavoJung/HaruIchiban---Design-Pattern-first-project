@@ -15,7 +15,7 @@ import javax.swing.Icon;
 
 import model.Peca;
 import tabuleiro.Tabuleiro;
-import view.Director;
+import builder.Director;
 
 public class ControleJogoImpl implements ControleJogo {
         private String player1;
@@ -32,9 +32,9 @@ public class ControleJogoImpl implements ControleJogo {
 	private MovimentoHeroi movimentoHeroi;
 	private List<Observador> observadores = new ArrayList<>();
 	private CommandInvoker commandInvoker;
-        int[] p1;
-        int[] p2;
-        
+        private int[] p1;
+        private int[] p2;
+        private Util util;
         
 	@Override
 	public void addObservador(Observador obs) {
@@ -43,6 +43,7 @@ public class ControleJogoImpl implements ControleJogo {
 	
 	@Override
 	public void inicializar() {
+            util = new Util();
             TabuleiroBuilder tabuleiroB = new TabuleiroConcreto();
             Director director = new Director(tabuleiroB);
             director.construir();
@@ -51,8 +52,7 @@ public class ControleJogoImpl implements ControleJogo {
 	}
 
 	@Override
-	public Icon getPeca(int col, int row) {
-		
+	public Icon getPeca(int col, int row) {	
 		return (tabuleiro[col][row] == null?null:tabuleiro[col][row].getImagem());
 	}
 
@@ -130,8 +130,6 @@ public class ControleJogoImpl implements ControleJogo {
 		this.tipoHeroi = tipoHeroi;
 	}
 
-	
-
     @Override
     public void jardineiroJunior() {
         if((this.nPlayer1 != -1 && this.nPlayer2 != -1) && (this.nPlayer1 < this.nPlayer2)){ 
@@ -141,6 +139,7 @@ public class ControleJogoImpl implements ControleJogo {
                 obs.jardineiroJunior(1);
             }
         }else if((this.nPlayer1 != -1 && this.nPlayer2 != -1) && (this.nPlayer1 == this.nPlayer2)){
+            //floracao
             for(Observador obs: observadores){
                 obs.jardineiroJunior(0);
             }
@@ -162,7 +161,7 @@ public class ControleJogoImpl implements ControleJogo {
         int random = -1;
         for(int i=0; i<8; i++){
             random = r.nextInt(8) + 1;
-            if(!new Util().numExiste(player1, random)){
+            if(!util.numExiste(player1, random)){
               player1[i] =random;
             }else{
                 i--;
@@ -179,7 +178,7 @@ public class ControleJogoImpl implements ControleJogo {
         
         for(int i=0; i<8; i++){
           random = r.nextInt(8)+1;
-          if(!new Util().numExiste(player2, random)){ 
+          if(!util.numExiste(player2, random)){ 
             player2[i] = random;
           }else{
               i--;
@@ -213,7 +212,7 @@ public class ControleJogoImpl implements ControleJogo {
 
     @Override
     public String converteNumero(int i) {  
-        return new Util().numeroExtenso(i);
+        return util.numeroExtenso(i);
     }
 
     @Override
@@ -245,39 +244,71 @@ public class ControleJogoImpl implements ControleJogo {
         }
     }
 
-
     @Override
     public void colocaFlor(String cor, int x, int y) {
-        if(new Util().naoFundo(x, y)){
-            if(!new Util().temSapo(x, y).equalsIgnoreCase("")){
-                corSapoClicked = new Util().temSapo(x,y).substring(4);
-                acaoAtual = "Posicione o sapo " + this.corSapoClicked + "!";
+        if(util.naoFundo(x, y) && util.naoFlor(x,y)){
+            if(!util.temSapo(x, y).equalsIgnoreCase("")){
+                corSapoClicked = util.temSapo(x,y).substring(4);
+                acaoAtual = "Jardineiro S- Posicione o sapo " + this.corSapoClicked + "!";
                 commandInvoker.execute(new ColocaFlor(Tabuleiro.getInstance(), x, y, cor));  
                 colocaSapo(this.corSapoClicked); 
             }else{
                commandInvoker.execute(new ColocaFlor(Tabuleiro.getInstance(), x, y, cor));
-               acaoAtual = "Selecione a régia que deseja movimentar!!";
+               acaoAtual = "Jardineiro J -Selecione a régia que deseja movimentar!!";
                notificaRemoveListenerFlor(acaoAtual);
             }                      
-                for(Observador obs: observadores){
-                    obs.mudouTabuleiro();
-                } 
+               notificarMudancaTabuleiro();
             }else{
-            acaoAtual = "Impossível colocar flor na lagoa! Coloque numa regia!";
-                notificarFlorLocalInvalido(acaoAtual);
-                
+            acaoAtual = "Jardineiro S - Impossível colocar flor aqui! Coloque numa regia vazia!";
+                notificarFlorLocalInvalido(acaoAtual);          
             }
         }
     
-    
     @Override
     public void posicionaSapo(String cor, int x, int y){
-        commandInvoker.execute(new ColocaSapo(Tabuleiro.getInstance(), x, y, cor));
-        acaoAtual = "Selecione a régia que deseja movimentar!!";
-        for(Observador obs: observadores){
-            obs.notificarJogadaAconteceu(acaoAtual);
-            obs.removeListener();
+        if(util.naoFundo(x, y) && util.naoFlor(x,y) && util.naoSapo(x, y)){
+            commandInvoker.execute(new ColocaSapo(Tabuleiro.getInstance(), x, y, cor));
+            acaoAtual = "Jardineiro J - Selecione a régia que deseja movimentar!!";
+            notificarSapoColocado();
+        }else{
+             acaoAtual = "Jardineiro J - Impossível colocar o sapo! Coloque numa regia clara vazia!";
+             notificarSapoLocalInvalido(acaoAtual);          
+        }      
+    }
+       
+    @Override
+    public void novaRegiaEscura(int x, int y) {
+        if(util.naoFundo(x, y) && util.naoFlor(x, y)){
+            if(!util.temSapo(x, y).equalsIgnoreCase("")){
+                corSapoClicked = util.temSapo(x, y).substring(4);
+                acaoAtual = "Jardineiro S - Posicione o sapo " + this.corSapoClicked + "!";  
+                commandInvoker.execute(new NovaRegiaEscura(Tabuleiro.getInstance(), x, y, player1));
+                colocaSapo("regiaEscura");      
+            }else{
+                commandInvoker.execute(new NovaRegiaEscura(Tabuleiro.getInstance(), x, y, player1));
+                acaoAtual = "Fim da rodada! Iniciando uma nova";
+                notificarRemoveListenerNovaRegiaEscura();
+            } 
+            notificarJogadaAconteceu(acaoAtual);
+            notificarMudancaTabuleiro();
+        }else{
+            acaoAtual = "Jardineiro S - Impossível tornar em régia escura! Selecione uma clara!";
+            notificarRegiaEscuraInvalida();
         }
+    }
+
+    @Override
+    public void posicionaSapoRegia(String sapoClicked, int selectedColumn, int selectedRow) {
+        if(util.naoFundo(selectedColumn, selectedRow) && util.naoFlor(selectedColumn,selectedRow) && util.naoSapo(selectedColumn, selectedRow)){
+            commandInvoker.execute(new ColocaSapo(Tabuleiro.getInstance(), selectedColumn,selectedRow,sapoClicked));
+            acaoAtual = "Fim da rodada! Iniciando uma nova";
+            notificarMudancaTabuleiro();
+            notificarRemoveListeners();
+            notificarJogadaAconteceu(acaoAtual);
+        }else{
+             acaoAtual = "Jardineiro S - Impossível colocar o sapo! Coloque numa regia clara vazia!";
+             notificarSapoLocalInvalido(acaoAtual);          
+        }      
     }
 
     @Override
@@ -298,21 +329,17 @@ public class ControleJogoImpl implements ControleJogo {
     @Override
    public void jogoIniciou(){
        if(this.jardineiroJunior != null && this.jardineiroSenior != null){
-           this.acaoAtual = "Posicione sua flor!"; 
+           this.acaoAtual = "Jardineiro S - Posicione sua flor!"; 
            notificarJogoIniciou();
        }
    }
-   
-   
 
     @Override
     public void primeiraRodada() {
-        int [] regiaEscura = new Util().getRegiaEscura();
+        int [] regiaEscura = util.getRegiaEscura();
        commandInvoker.execute(new ColocaFlor(Tabuleiro.getInstance(), regiaEscura[0],regiaEscura[1], jardineiroJunior));
-        notificarJogadaAconteceu();
+        notificarJogadaAconteceu(acaoAtual);
     }
-    
-    
 
     @Override
     public String getPlayer2() {
@@ -331,8 +358,8 @@ public class ControleJogoImpl implements ControleJogo {
 
     @Override
     public void floracaoAutomatica() {
-       int sapoAmarelo[] = new Util().getSapoAmarelo();
-       int sapoVermelho[] = new Util().getSapoVermelho();
+       int sapoAmarelo[] = util.getSapoAmarelo();
+       int sapoVermelho[] = util.getSapoVermelho();
        commandInvoker.execute(new ColocaFlor(Tabuleiro.getInstance(), sapoAmarelo[0], sapoAmarelo[1], "Amarelo"));
        commandInvoker.execute(new ColocaFlor(Tabuleiro.getInstance(), sapoVermelho[0], sapoVermelho[1], "Vermelho"));
        notificarFloracaoAutomatica();
@@ -346,7 +373,8 @@ public class ControleJogoImpl implements ControleJogo {
     
     private void colocaSapo(String sapo) {
         for(Observador obs: observadores){
-            obs.notificarColocarSapo(this.acaoAtual);
+            obs.notificarColocarSapo(sapo);
+            obs.notificarJogadaAconteceu(acaoAtual);
         }
         
     }
@@ -356,24 +384,24 @@ public class ControleJogoImpl implements ControleJogo {
 			obs.iniciouJogo();
 	}
 
-	private void notificarMudancaTabuleiro() {
+    private void notificarMudancaTabuleiro() {
 		for (Observador obs:observadores)
 			obs.mudouTabuleiro();
 		
 	}
 	
-	private void notificarFimJogo(String msgErro) {
+    private void notificarFimJogo(String msgErro) {
 		for (Observador obs:observadores)
 			obs.fimDeJogo(msgErro);
 	}
         
-        private void notificarJogoIniciou(){
+    private void notificarJogoIniciou(){
             for(Observador obs: observadores){
                 obs.notifcarJogoIniciou();
             }
         }
         
-        private void notificarJogadaAconteceu(){
+    private void notificarJogadaAconteceu(String acaoAtual1){
          for(Observador obs: observadores){
             obs.notificarJogadaAconteceu(acaoAtual);
             }
@@ -417,19 +445,43 @@ public class ControleJogoImpl implements ControleJogo {
         }
     }
 
-    @Override
-    public void novaRegiaEscura(int x, int y) {
-        
-        notificarNovaRegiaEscura();
-        commandInvoker.execute(new NovaRegiaEscura(Tabuleiro.getInstance(), x, y, player1));
-    }
-
     private void notificarNovaRegiaEscura() {
         for(Observador obs: observadores){
             obs.mudouTabuleiro();
-                        obs.notificarNovaRegiaEscura(acaoAtual);
+            obs.notificarNovaRegiaEscura(acaoAtual);
         }
     }
 
+    private void notificarSapoLocalInvalido(String acaoAtual) {
+        for(Observador obs: observadores){
+            obs.notificarSapoLocalErrado(acaoAtual);
+        }
+    }
+
+    private void notificarSapoColocado() {
+        for(Observador obs: observadores){
+            obs.notificarSapoColocado(acaoAtual);
+        }
+    }
+
+    private void notificarRegiaEscuraInvalida() {
+        for(Observador obs: observadores){
+            obs.notificarRegiaEscuraInvalida(acaoAtual);
+        }
+    }
+
+    private void notificarRemoveListenerNovaRegiaEscura() {
+        for(Observador obs: observadores){
+            obs.notificarRemoveListenerRegiaEscura(acaoAtual);
+        }
+    }
+
+    private void notificarRemoveListeners() {
+        for(Observador obs: observadores){
+            obs.notificarRemoveListeners();
+        }
+    }
+
+  
     
 }

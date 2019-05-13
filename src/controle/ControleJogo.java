@@ -68,5 +68,7 @@ public interface ControleJogo {
 
     public void novaRegiaEscura(int x, int y);
 
+    public void posicionaSapoRegia(String sapoClicked, int selectedColumn, int selectedRow);
+
    
 }

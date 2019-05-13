@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package view;
+package builder;
 
 import builder.TabuleiroBuilder;
 
@@ -14,13 +14,12 @@ import builder.TabuleiroBuilder;
 public class Director {
    private TabuleiroBuilder tabuleiroB;
    
-   public Director(TabuleiroBuilder tabuleiroB) {
-		this.tabuleiroB = tabuleiroB;
-	}
+    public Director(TabuleiroBuilder tabuleiroB) {
+	this.tabuleiroB = tabuleiroB;
+    }
 	
-	public void construir() {
-	           
-            tabuleiroB.reset();
-		tabuleiroB.build();
-	}
+    public void construir() {         
+        tabuleiroB.reset();
+        tabuleiroB.build();
+    }
 }

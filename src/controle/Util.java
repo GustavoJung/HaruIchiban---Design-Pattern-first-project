@@ -122,5 +122,25 @@ public class Util {
          
          return retorno;
      }
+
+    public boolean naoFlor(int x, int y) {
+        boolean retorno = true;
+         
+         if(Tabuleiro.getInstance().getTabuleiro()[x][y].getImagem().toString().equalsIgnoreCase("imagens/florAmarela.png") ||
+         Tabuleiro.getInstance().getTabuleiro()[x][y].getImagem().toString().equalsIgnoreCase("imagens/florVermelha.png"))
+             retorno = false;
+         
+         return retorno;
+    }
+    
+    public boolean naoSapo(int x, int y) {
+        boolean retorno = true;
+         
+         if(Tabuleiro.getInstance().getTabuleiro()[x][y].getImagem().toString().equalsIgnoreCase("imagens/sapoAmarelo.png") ||
+         Tabuleiro.getInstance().getTabuleiro()[x][y].getImagem().toString().equalsIgnoreCase("imagens/sapoVermelho.png"))
+             retorno = false;
+         
+         return retorno;
+    }
      
 }

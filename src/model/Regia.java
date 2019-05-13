@@ -11,7 +11,7 @@ import javax.swing.Icon;
  *
  * @author 08205268940
  */
-public class Regia extends Peca{
+public abstract class Regia extends Peca{
     
     public Regia(Icon imagem) {
         super(imagem);

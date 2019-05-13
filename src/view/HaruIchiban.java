@@ -21,6 +21,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import controle.ControleJogo;
 import controle.ControleJogoImpl;
 import controle.Observador;
+import static java.awt.BorderLayout.NORTH;
 import java.awt.Button;
 import java.awt.Color;
 import java.awt.FlowLayout;
@@ -55,148 +56,20 @@ public class HaruIchiban extends JFrame implements Observador {
     private JLabel turno;
 
     @Override
-    public void jardineiroJunior(int player) {
-        
-        if(player != 0){
-            Jplayer = new JLabel("O Player " + player + " será o primeiro a jogar! Boa Sorte!");        
-        }else{
-            Jplayer = new JLabel("FLORAÇÃO AUTOMÁTICA!!");
-            controle.floracaoAutomatica();
-        }
-        if (SwingUtilities.isEventDispatchThread()) {
-                jdialog.add(Jplayer);
-                jdialog.validate();
-                jdialog.repaint();    
-                startGame(Jplayer);
-            }
-    }
-    
-   private void startGame(JLabel label){
-        SwingUtilities.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    
-                Timer t = new Timer(3000, new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent arg0) {
-                    tabuleiro.setCellSelectionEnabled(true);
-                    tabuleiro.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-                    jdialog.dispose();
-                    controle.jogoIniciou();
-                }                   
-        });
-        t.setRepeats(false);
-        t.start();
-    }
-    });
-   }
-  
-   
-    @Override
-    public void notificarJogadaAconteceu(String acaoAtual){
-        alteraDialog(acaoAtual);
-        mudouTabuleiro();
-    }
-   
-@Override
-        public void notificarMudancaFlor(int numero, String player) {
-        switch (player) {
-            case "Amarelo":
-                if (numero == 1) {
-                    florAmarela2.setIcon(new ImageIcon("imagens/florAmarela.png"));
-                    florAmarela3.setIcon(new ImageIcon("imagens/florAmarela.png"));
-                } else if (numero == 2) {
-                    florAmarela1.setIcon(new ImageIcon("imagens/florAmarela.png"));
-                    florAmarela3.setIcon(new ImageIcon("imagens/florAmarela.png"));
-                } else {
-                    florAmarela2.setIcon(new ImageIcon("imagens/florAmarela.png"));
-                    florAmarela1.setIcon(new ImageIcon("imagens/florAmarela.png"));
-                }
-                break;
-            case "Vermelho":
-                if (numero == 1) {
-                    florVermelha2.setIcon(new ImageIcon("imagens/florVermelha.png"));
-                    florVermelha3.setIcon(new ImageIcon("imagens/florVermelha.png"));
-                } else if (numero == 2) {
-                    florVermelha1.setIcon(new ImageIcon("imagens/florVermelha.png"));
-                    florVermelha3.setIcon(new ImageIcon("imagens/florVermelha.png"));
-                } else {
-                    florVermelha2.setIcon(new ImageIcon("imagens/florVermelha.png"));
-                    florVermelha1.setIcon(new ImageIcon("imagens/florVermelha.png"));
-                }
-                break;
-        }
-    }
-
-    @Override
-        public void florAmarelaClicked() {
-        removeListenersAmarelos(florAmarela1, florAmarela2, florAmarela2);
-    }
-
-    @Override
-        public void florVermelhaClicked() {
-        removeListenersVermelhos(florVermelha1, florVermelha2, florVermelha2);  
-}
-
-    @Override
-    public void notifcarJogoIniciou() {
-       controle.primeiraRodada();
-        addListeners();
-      
-    }
-
-    @Override
-    public void notificarFloracaoAutomatica() {
-        mudouTabuleiro();
-    }
-
-    @Override
-    public void notificarColocarSapo(String acao) {           
-        tabuleiro.removeMouseListener(listenerColocaFlor);
-        tabuleiro.addMouseListener(listenerColocaSapo);
-        alteraDialog(acao);
-    }
-
-    @Override
-    public void removeListener() {
-        tabuleiro.removeMouseListener(listenerColocaFlor);
-        tabuleiro.removeMouseListener(listenerColocaSapo);
-        tabuleiro.removeMouseListener(listenerColocaRegiaEscura);
-        tabuleiro.removeKeyListener(listenerMoveCells);
-    }
-
-    @Override
-    public void notificarSelecionouCelula(int selectedColumn, int selectedRow) {
-       tabuleiro.setSelectionForeground(Color.lightGray);
-       mudouTabuleiro();
-    }
-
-    @Override
-    public void notificarColocouFlor(String acao) {
-        tabuleiro.removeMouseListener(listenerColocaFlor);
-        tabuleiro.addKeyListener(listenerMoveCells);
-        alteraDialog(acao);
-    }
-
-    @Override
-    public void notificarMoveuCelula(String acaoAtual) {
-    tabuleiro.removeKeyListener(listenerMoveCells);
-        alteraDialog(acaoAtual);
-        //controle.verificaPontos();
-        tabuleiro.addMouseListener(listenerColocaRegiaEscura);
-        
-    }
-
-    @Override
-    public void notificarFlorLocalErrado(String acaoAtual) {
+    public void notificarRegiaEscuraInvalida(String acaoAtual) {
         alteraDialog(acaoAtual);
     }
 
     @Override
-    public void notificarNovaRegiaEscura(String acaoAtual) {
-        //alteraDialog(acaoAtual);
+    public void notificarRemoveListenerRegiaEscura(String acaoAtual) {
+        removeListener();
+        alteraDialog(acaoAtual);
     }
 
+    @Override
+    public void notificarRemoveListeners() {
+        removeListener();
+    }
     
     class HaruTableModel extends AbstractTableModel {
 
@@ -255,6 +128,7 @@ public class HaruIchiban extends JFrame implements Observador {
 
     }
 
+    private Button b1;
     private void initComponents() {
 
         // criar o tabuleiro e seus componentes
@@ -283,13 +157,65 @@ public class HaruIchiban extends JFrame implements Observador {
         JLabel player = new JLabel("Player 1 será: ");
         jp.add(player);
 
-        Button b1 = new Button("Jogar");
+         b1 = new Button("Jogar");
         b1.setSize(30, 30);
 
         b1.addActionListener(new ActionListener() {
             @Override
         public void actionPerformed(ActionEvent ae) {
-                jdialog = new JDialog(getJFrame(), true);
+               addJDialog();
+            }  
+        });
+
+        addJrGroup();
+        addPlacarPontuacao();
+
+    }
+    
+    private JLabel pontuacaoP1;
+    private JLabel pontuacaoP2;
+    private JPanel panelPontuacao;
+    
+    private void addPlacarPontuacao() {
+        panelPontuacao = new JPanel();
+        panelPontuacao.setLayout(new FlowLayout());
+        panelPontuacao.setSize(50,50);
+        
+        pontuacaoP1 = new JLabel("Pontuacao player 1 = 0");
+        pontuacaoP2 = new JLabel("Pontuacao player 2 = 0");
+        
+        JPanel placar = new JPanel();
+        placar.add(pontuacaoP1);
+        placar.add(pontuacaoP2);
+        placar.setSize(50,50);
+        panelPontuacao.add(placar);
+        add(panelPontuacao,NORTH);
+    }
+
+    public void addJrGroup(){
+        JPanel jrGrupo = new JPanel();
+
+        ButtonGroup bgTipoHeroi = new ButtonGroup();
+
+        jrAmarelo = new JRadioButton("Amarelo");
+        jrAmarelo.setSelected(true);
+        jrAmarelo.setActionCommand("Amarelo");
+        jrGrupo.add(jrAmarelo);
+        bgTipoHeroi.add(jrAmarelo);
+
+        jrVermelho = new JRadioButton("Vermelho");
+        jrGrupo.add(jrVermelho);
+        jrVermelho.setActionCommand("Vermelho");
+        bgTipoHeroi.add(jrVermelho);
+
+        jp.add(jrGrupo);
+        jp.add(b1);
+
+        add(jp, SOUTH);
+    }
+
+    private void addJDialog() {
+          jdialog = new JDialog(getJFrame(), true);
                 String player1 = jrAmarelo.isSelected() ? "Amarelo" : "Vermelho";
                 String player2 = jrAmarelo.isSelected() ? "Vermelho" : "Amarelo";
                 controle.setPlayer1(player1);
@@ -384,32 +310,9 @@ public class HaruIchiban extends JFrame implements Observador {
                 }
 
                 jdialog.setLocationRelativeTo(getJFrame());
-                jdialog.setVisible(true);
-            }
-        });
-
-        JPanel jrGrupo = new JPanel();
-
-        ButtonGroup bgTipoHeroi = new ButtonGroup();
-
-        jrAmarelo = new JRadioButton("Amarelo");
-        jrAmarelo.setSelected(true);
-        jrAmarelo.setActionCommand("Amarelo");
-        jrGrupo.add(jrAmarelo);
-        bgTipoHeroi.add(jrAmarelo);
-
-        jrVermelho = new JRadioButton("Vermelho");
-        jrGrupo.add(jrVermelho);
-        jrVermelho.setActionCommand("Vermelho");
-        bgTipoHeroi.add(jrVermelho);
-
-        jp.add(jrGrupo);
-        jp.add(b1);
-
-        add(jp, SOUTH);
-
+                jdialog.setVisible(true);       
     }
-
+    
     public static void main(String[] args) {
         try {
             HaruIchiban d = new HaruIchiban();
@@ -420,6 +323,170 @@ public class HaruIchiban extends JFrame implements Observador {
 
     }
 
+    @Override
+    public void jardineiroJunior(int player) {
+        
+        if(player != 0){
+            Jplayer = new JLabel("O Player " + player + " será o primeiro a jogar! Boa Sorte!");        
+         if (SwingUtilities.isEventDispatchThread()) {
+                jdialog.add(Jplayer);
+                jdialog.validate();
+                jdialog.repaint();    
+                startGame(Jplayer);
+            }
+        }else{
+            Jplayer = new JLabel("FLORAÇÃO AUTOMÁTICA!!");
+            controle.floracaoAutomatica();
+        }
+       
+    }
+    
+    private void startGame(JLabel label){
+        SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    
+                Timer t = new Timer(3000, new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent arg0) {
+                    tabuleiro.setCellSelectionEnabled(true);
+                    tabuleiro.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+                    jdialog.dispose();
+                    controle.jogoIniciou();
+                }                   
+        });
+        t.setRepeats(false);
+        t.start();
+    }
+    });
+   }
+  
+    @Override
+    public void notificarSapoColocado(String acaoAtual) {
+        tabuleiro.removeMouseListener(listenerColocaSapo);
+        tabuleiro.addKeyListener(listenerMoveCells);
+        alteraDialog(acaoAtual);
+    }
+     
+   @Override
+    public void notificarSapoLocalErrado(String acaoAtual) {
+        alteraDialog(acaoAtual);
+    }
+    
+    @Override
+    public void notificarJogadaAconteceu(String acaoAtual){
+        alteraDialog(acaoAtual);
+        mudouTabuleiro();
+    }
+   
+    @Override
+    public void notificarMudancaFlor(int numero, String player) {
+        switch (player) {
+            case "Amarelo":
+                if (numero == 1) {
+                    florAmarela2.setIcon(new ImageIcon("imagens/Amarela.png"));
+                    florAmarela3.setIcon(new ImageIcon("imagens/Amarela.png"));
+                } else if (numero == 2) {
+                    florAmarela1.setIcon(new ImageIcon("imagens/Amarela.png"));
+                    florAmarela3.setIcon(new ImageIcon("imagens/Amarela.png"));
+                } else {
+                    florAmarela2.setIcon(new ImageIcon("imagens/Amarela.png"));
+                    florAmarela1.setIcon(new ImageIcon("imagens/Amarela.png"));
+                }
+                break;
+            case "Vermelho":
+                if (numero == 1) {
+                    florVermelha2.setIcon(new ImageIcon("imagens/Vermelha.png"));
+                    florVermelha3.setIcon(new ImageIcon("imagens/Vermelha.png"));
+                } else if (numero == 2) {
+                    florVermelha1.setIcon(new ImageIcon("imagens/Vermelha.png"));
+                    florVermelha3.setIcon(new ImageIcon("imagens/Vermelha.png"));
+                } else {
+                    florVermelha2.setIcon(new ImageIcon("imagens/Vermelha.png"));
+                    florVermelha1.setIcon(new ImageIcon("imagens/Vermelha.png"));
+                }
+                break;
+        }
+    }
+
+    @Override
+    public void florAmarelaClicked() {
+        removeListenersAmarelos(florAmarela1, florAmarela2, florAmarela2);
+    }
+
+    @Override
+    public void florVermelhaClicked() {
+        removeListenersVermelhos(florVermelha1, florVermelha2, florVermelha2);  
+    }
+
+    @Override
+    public void notifcarJogoIniciou() {
+       controle.primeiraRodada();
+        addListeners();
+    }
+
+    @Override
+    public void notificarFloracaoAutomatica() {
+        mudouTabuleiro();
+        addJDialog();    
+    }
+    
+    @Override
+    public void notificarColocarSapo(String acao) {           
+        if(acao.equalsIgnoreCase("regiaEscura")){
+            tabuleiro.removeMouseListener(listenerColocaRegiaEscura);
+            tabuleiro.addMouseListener(listenerColocaSapoRegia);
+       
+        }else{
+            tabuleiro.removeMouseListener(listenerColocaFlor);
+            tabuleiro.removeMouseListener(listenerColocaRegiaEscura);
+            tabuleiro.addMouseListener(listenerColocaSapo);
+     
+        }
+    }
+
+    @Override
+    public void removeListener() {
+        tabuleiro.removeMouseListener(listenerColocaFlor);
+        tabuleiro.removeMouseListener(listenerColocaSapo);
+        tabuleiro.removeMouseListener(listenerColocaSapoRegia);
+        tabuleiro.removeMouseListener(listenerColocaRegiaEscura);
+        tabuleiro.removeKeyListener(listenerMoveCells);
+    }
+
+    @Override
+    public void notificarSelecionouCelula(int selectedColumn, int selectedRow) {
+       tabuleiro.setSelectionForeground(Color.lightGray);
+       mudouTabuleiro();
+    }
+
+    @Override
+    public void notificarColocouFlor(String acao) {
+        tabuleiro.removeMouseListener(listenerColocaFlor);
+        tabuleiro.addKeyListener(listenerMoveCells);
+        alteraDialog(acao);
+    }
+
+    @Override
+    public void notificarMoveuCelula(String acaoAtual) {
+    tabuleiro.removeKeyListener(listenerMoveCells);
+        alteraDialog(acaoAtual);
+        //controle.verificaPontos();
+        tabuleiro.addMouseListener(listenerColocaRegiaEscura);
+        
+    }
+
+    @Override
+    public void notificarFlorLocalErrado(String acaoAtual) {
+        alteraDialog(acaoAtual);
+    }
+
+    @Override
+    public void notificarNovaRegiaEscura(String acaoAtual) {
+        //alteraDialog(acaoAtual);
+    }
+
+    
     @Override
         public void iniciouJogo() {
         tabuleiro.setCellSelectionEnabled(true);
@@ -472,6 +539,18 @@ public class HaruIchiban extends JFrame implements Observador {
         tabuleiro.addMouseListener(listenerColocaFlor);
     }
     
+    private void alteraDialog(String acao){
+        remove(jp);
+       jp = new JPanel();
+       jp.setLayout(new FlowLayout());
+       
+       turno = new JLabel(acao);
+       jp.add(turno);
+       add(jp,SOUTH);
+       validate();
+       repaint();
+    }
+    
     MouseListener listenerColocaFlor = new MouseAdapter() {
         public void mouseClicked(MouseEvent e){
             controle.colocaFlor(controle.getJardineiroS(),tabuleiro.getSelectedColumn(),tabuleiro.getSelectedRow());              
@@ -481,15 +560,18 @@ public class HaruIchiban extends JFrame implements Observador {
     MouseListener listenerColocaSapo = new MouseAdapter() {
         public void mouseClicked(MouseEvent e){
             controle.posicionaSapo(controle.getSapoClicked(),tabuleiro.getSelectedColumn(),tabuleiro.getSelectedRow());
-            removeListener();
-            tabuleiro.addKeyListener(listenerMoveCells);
+        }
+    };
+    
+    MouseListener listenerColocaSapoRegia = new MouseAdapter() {
+        public void mouseClicked(MouseEvent e){
+            controle.posicionaSapoRegia(controle.getSapoClicked(),tabuleiro.getSelectedColumn(),tabuleiro.getSelectedRow());
         }
     };
     
     MouseListener listenerColocaRegiaEscura = new MouseAdapter(){
         public void mouseClicked(MouseEvent e){
             controle.novaRegiaEscura(tabuleiro.getSelectedColumn(),tabuleiro.getSelectedRow());
-            removeListener();
         }
     };
     
@@ -499,16 +581,4 @@ public class HaruIchiban extends JFrame implements Observador {
             controle.moveCells(tabuleiro.getSelectedRow(), tabuleiro.getSelectedColumn(), k.getKeyCode());
         }
     };
-
-    private void alteraDialog(String acao){
-        remove(jp);
-       jp = new JPanel();
-       jp.setLayout(new FlowLayout());
-       
-       turno = new JLabel("Turno do player " + controle.getJardineiroS() + " - " + acao);
-       jp.add(turno);
-       add(jp,SOUTH);
-       validate();
-       repaint();
-    }
 }

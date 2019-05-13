@@ -11,7 +11,7 @@ import javax.swing.Icon;
  *
  * @author 08205268940
  */
-public class Flor extends Peca{
+public abstract class Flor extends Peca{
     
     public Flor(Icon imagem) {
         super(imagem);

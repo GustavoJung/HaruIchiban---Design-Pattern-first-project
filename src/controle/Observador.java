@@ -35,5 +35,15 @@ public interface Observador {
     public void notificarFlorLocalErrado(String acaoAtual);
     
     void notificarNovaRegiaEscura(String acaoAtual);
+
+    public void notificarSapoLocalErrado(String acaoAtual);
+
+    public void notificarSapoColocado(String acaoAtual);
+
+    public void notificarRegiaEscuraInvalida(String acaoAtual);
+
+    public void notificarRemoveListenerRegiaEscura(String acaoAtual);
+
+    public void notificarRemoveListeners();
         
 }
