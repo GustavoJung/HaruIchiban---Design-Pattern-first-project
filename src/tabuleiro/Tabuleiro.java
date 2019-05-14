@@ -97,8 +97,8 @@ public class Tabuleiro {
         if (aux1 + 1 < 5) {
             aux2 = tabuleiro[aux1 + 1][y];
         }
-
-        if (aux2 != null) {
+        
+     if (aux2 != null) {
             if (aux2.getImagem().toString().equalsIgnoreCase("imagens/fundoTabuleiro.png")) {
                 tabuleiro[x][y] = new FundoTabuleiro();
                 tabuleiro[x + 1][y] = aux;
@@ -110,7 +110,8 @@ public class Tabuleiro {
                 for (int i = x; i < 5; i++) {
                     if (!tabuleiro[i][y].getImagem().toString().equalsIgnoreCase("imagens/fundoTabuleiro.png")) {
                         auxiliar++;
-                    }
+                    }else
+                        break;
                 }
 
                 if (x + auxiliar >= 5) {
@@ -123,7 +124,10 @@ public class Tabuleiro {
 
                         if (aux1 + 1 < 4) {
                             aux1++;
+                            
+                           
                             aux2 = tabuleiro[aux1 + 1][y];
+                            
                         }
                         cont++;
                         tabuleiro[x][y] = new FundoTabuleiro();
@@ -133,6 +137,7 @@ public class Tabuleiro {
         } else {
             stateMovement = false;
         }
+        
     }
 
     private void moveEsquerda(int x, int y) throws Exception {
@@ -152,23 +157,24 @@ public class Tabuleiro {
             } else {
                 
                 int auxiliar = 5;
-                for (int i = x; i >= 0; i--) {
+                for (int i = x; i > 0; i--) {
                     if (!tabuleiro[i][y].getImagem().toString().equalsIgnoreCase("imagens/fundoTabuleiro.png")) {
                         auxiliar--;
+                    }else{
+                        break;
                     }
                 }
-            System.out.println("auxiliar " + auxiliar + " x " + x);
                 if (x - auxiliar < 0) {
                     stateMovement = false;
                 } else {
                     int cont = 0;
-                    while (cont <= auxiliar) {
+                    while (cont < auxiliar) {
                         tabuleiro[aux1 - 1][y] = aux;
                         aux = aux2;
 
                         if (aux1 - 1 > 0) {
                             aux1--;
-                            aux2 = tabuleiro[aux1][y];
+                            aux2 = tabuleiro[aux1-1][y];
                         }
                         cont++;
                         tabuleiro[x][y] = new FundoTabuleiro();
