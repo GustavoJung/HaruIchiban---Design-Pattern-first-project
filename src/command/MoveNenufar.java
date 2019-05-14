@@ -5,6 +5,8 @@
  */
 package command;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import tabuleiro.Tabuleiro;
 
 /**
@@ -22,12 +24,20 @@ public class MoveNenufar extends TabuleiroCommand{
 
     @Override
     public void execute() {
-        tabuleiroC.moveNenufar(x, y, keyPressed);
+        try {
+            tabuleiroC.moveNenufar(x, y, keyPressed);
+        } catch (Exception ex) {
+            Logger.getLogger(MoveNenufar.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @Override
     public void undo() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+            tabuleiroC.moveNenufarUndo(x,y);
+        } catch (Exception ex) {
+            Logger.getLogger(MoveNenufar.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @Override

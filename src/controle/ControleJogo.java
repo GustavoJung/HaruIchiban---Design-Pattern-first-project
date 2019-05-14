@@ -70,5 +70,11 @@ public interface ControleJogo {
 
     public void posicionaSapoRegia(String sapoClicked, int selectedColumn, int selectedRow);
 
-   
+    int getAuxPosicaoClicadaVermelho();
+    
+    int getAuxPosicaoClicadaAmarelo();
+
+    public void mudaValor();
+
+    
 }

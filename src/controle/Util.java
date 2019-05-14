@@ -142,5 +142,15 @@ public class Util {
          
          return retorno;
     }
+
+    public int randomValue(int[] p1, int nPlayer1) {
+       int retorno = -1;
+       for(int i=0; i<8; i++){
+           if(p1[i] != nPlayer1)
+               retorno = p1[i];
+       }
+       
+       return retorno;
+    }
      
 }

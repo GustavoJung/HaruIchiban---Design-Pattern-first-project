@@ -5,6 +5,7 @@
  */
 package tabuleiro;
 
+import model.Flor;
 import model.FlorAmarela;
 import model.FlorVermelha;
 import model.FundoTabuleiro;
@@ -20,7 +21,13 @@ import model.SapoVermelho;
 public class Tabuleiro {
     
     private Peca[][] tabuleiro;
+    private boolean stateMovement = true;
 
+    public boolean getStateMovement() {
+        return stateMovement;
+    }
+    
+    
     public Peca[][] getTabuleiro() {
         return tabuleiro;
     }
@@ -33,20 +40,17 @@ public class Tabuleiro {
 	
 	public synchronized static Tabuleiro getInstance() {
 		if (instance == null)
-			instance = new Tabuleiro();
-		
+			instance = new Tabuleiro();		
 		return instance;
 	}
 
     public void colocaFlor(int x, int y, String cor) {
-        System.out.println("coloca flor cor " + cor);
-        if(cor.equalsIgnoreCase("Vermelho"))
+        if(cor.equalsIgnoreCase("Vermelho")){
             tabuleiro[x][y] = new FlorVermelha();
-        else
-            tabuleiro[x][y] = new FlorAmarela();
-            
-    }
-    
+        }else{
+            tabuleiro[x][y] = new FlorAmarela(); 
+        }
+}
     public void colocaSapo(int x, int y, String cor){
         if(cor.equalsIgnoreCase("Vermelho"))
             tabuleiro[x][y] = new SapoVermelho();
@@ -55,14 +59,11 @@ public class Tabuleiro {
             
     }
     
-    public void moveNenufar(int x, int y, int key){
+    public void moveNenufar(int x, int y, int key) throws Exception{
         Peca aux = null;
         switch(key){
-            case 39:
-                
-                 aux = tabuleiro[x][y];
-                tabuleiro[x][y] = new FundoTabuleiro();
-                tabuleiro[x+1][y] = aux;
+            case 39: 
+                moveDireita(x,y);
                 break;
             case 37:
                 
@@ -83,13 +84,60 @@ public class Tabuleiro {
                 tabuleiro[x][y+1] = aux;
                 break;
         }
-        
     }
 
     public void novaRegiaEscura(int x, int y) {
         tabuleiro[x][y] = new RegiaEscura();
     }
 
-    
-    
+    private void moveDireita(int x, int y) throws Exception{
+        int aux1 = x;
+        Peca aux2 = null;
+        Peca aux = tabuleiro[aux1][y];
+        
+        if(aux1 + 1 <5)
+         aux2=tabuleiro[aux1+1][y];
+        
+        if(aux2 != null){
+        if(aux2.getImagem().toString().equalsIgnoreCase("imagens/fundoTabuleiro.png")){
+            tabuleiro[x][y] = new FundoTabuleiro();
+            tabuleiro[x+1][y] = aux;
+        }else if(x+1 > 5){
+            stateMovement = false;
+        }else{     
+            int auxiliar =0;
+        
+        for(int i=x; i<5; i++){
+            if(!tabuleiro[i][y].getImagem().toString().equalsIgnoreCase("imagens/fundoTabuleiro.png")){
+                auxiliar ++;
+            }
+        }
+                
+        if(x+auxiliar >= 5){
+            stateMovement = false;
+        }else{
+            int cont =0;
+            while(cont < auxiliar){
+                tabuleiro[aux1+1][y] =aux;
+                    aux = aux2;
+                    
+                    if(aux1+1 < 4){
+                        aux1++;
+                      aux2 = tabuleiro[aux1+1][y];
+                    }
+                    System.out.println("aqui");
+                    cont++;
+                    tabuleiro[x][y] = new FundoTabuleiro();
+            }
+                
+        
+        }
+        }
+    }else{
+            stateMovement = false;
+        }
+    }
+    public void moveNenufarUndo( int x , int y) throws Exception {
+          throw new Exception();
+    }
 }

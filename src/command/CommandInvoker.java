@@ -53,7 +53,7 @@ public class CommandInvoker {
 		}		
 	}
 	
-	public void execute(Command comm) {
+	public void execute(Command comm) throws Exception{
 		comm.execute();
 		todos.add(comm);
 	}

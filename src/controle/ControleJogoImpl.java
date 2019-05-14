@@ -16,6 +16,8 @@ import javax.swing.Icon;
 import model.Peca;
 import tabuleiro.Tabuleiro;
 import builder.Director;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ControleJogoImpl implements ControleJogo {
         private String player1;
@@ -35,6 +37,8 @@ public class ControleJogoImpl implements ControleJogo {
         private int[] p1;
         private int[] p2;
         private Util util;
+        private int auxPosicaoClicadaVermelho;
+        private int auxPosicaoClicadaAmarelo;
         
 	@Override
 	public void addObservador(Observador obs) {
@@ -227,9 +231,13 @@ public class ControleJogoImpl implements ControleJogo {
 
     @Override
     public void changeFlowers(int num, String cor) {
+        if(cor.equalsIgnoreCase("Vermelho"))
+            auxPosicaoClicadaVermelho = num ;
+        else
+            auxPosicaoClicadaAmarelo = num ;
+            
         for(Observador obs: observadores){
-        obs.notificarMudancaFlor(num, cor);
-            break;
+            obs.notificarMudancaFlor(num, cor);
         }
     }
 	
@@ -250,13 +258,21 @@ public class ControleJogoImpl implements ControleJogo {
             if(!util.temSapo(x, y).equalsIgnoreCase("")){
                 corSapoClicked = util.temSapo(x,y).substring(4);
                 acaoAtual = "Jardineiro S- Posicione o sapo " + this.corSapoClicked + "!";
+                try{
                 commandInvoker.execute(new ColocaFlor(Tabuleiro.getInstance(), x, y, cor));  
                 colocaSapo(this.corSapoClicked); 
+                }catch(Exception ex){
+                    Logger.getLogger(ControleJogoImpl.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }else{
-               commandInvoker.execute(new ColocaFlor(Tabuleiro.getInstance(), x, y, cor));
-               acaoAtual = "Jardineiro J -Selecione a régia que deseja movimentar!!";
-               notificaRemoveListenerFlor(acaoAtual);
-            }                      
+                try {
+                    commandInvoker.execute(new ColocaFlor(Tabuleiro.getInstance(), x, y, cor));
+                    acaoAtual = "Jardineiro J -Selecione a régia que deseja movimentar!!";
+                    notificaRemoveListenerFlor(acaoAtual); 
+                } catch (Exception ex) {
+                    Logger.getLogger(ControleJogoImpl.class.getName()).log(Level.SEVERE, null, ex);
+                }
+               }                      
                notificarMudancaTabuleiro();
             }else{
             acaoAtual = "Jardineiro S - Impossível colocar flor aqui! Coloque numa regia vazia!";
@@ -267,10 +283,14 @@ public class ControleJogoImpl implements ControleJogo {
     @Override
     public void posicionaSapo(String cor, int x, int y){
         if(util.naoFundo(x, y) && util.naoFlor(x,y) && util.naoSapo(x, y)){
-            commandInvoker.execute(new ColocaSapo(Tabuleiro.getInstance(), x, y, cor));
-            acaoAtual = "Jardineiro J - Selecione a régia que deseja movimentar!!";
-            notificarSapoColocado();
-        }else{
+            try {
+                commandInvoker.execute(new ColocaSapo(Tabuleiro.getInstance(), x, y, cor));
+                acaoAtual = "Jardineiro J - Selecione a régia que deseja movimentar!!";
+                notificarSapoColocado();
+            } catch (Exception ex) {
+                Logger.getLogger(ControleJogoImpl.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            }else{
              acaoAtual = "Jardineiro J - Impossível colocar o sapo! Coloque numa regia clara vazia!";
              notificarSapoLocalInvalido(acaoAtual);          
         }      
@@ -282,13 +302,21 @@ public class ControleJogoImpl implements ControleJogo {
             if(!util.temSapo(x, y).equalsIgnoreCase("")){
                 corSapoClicked = util.temSapo(x, y).substring(4);
                 acaoAtual = "Jardineiro S - Posicione o sapo " + this.corSapoClicked + "!";  
-                commandInvoker.execute(new NovaRegiaEscura(Tabuleiro.getInstance(), x, y, player1));
-                colocaSapo("regiaEscura");      
-            }else{
-                commandInvoker.execute(new NovaRegiaEscura(Tabuleiro.getInstance(), x, y, player1));
-                acaoAtual = "Fim da rodada! Iniciando uma nova";
-                notificarRemoveListenerNovaRegiaEscura();
-            } 
+                try {
+                    commandInvoker.execute(new NovaRegiaEscura(Tabuleiro.getInstance(), x, y, player1));
+                    colocaSapo("regiaEscura");      
+                } catch (Exception ex) {
+                    Logger.getLogger(ControleJogoImpl.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                }else{
+                try {
+                    commandInvoker.execute(new NovaRegiaEscura(Tabuleiro.getInstance(), x, y, player1));
+                       acaoAtual = "Fim da rodada! Iniciando uma nova";
+                    notificarRemoveListenerNovaRegiaEscura(); 
+                } catch (Exception ex) {
+                    Logger.getLogger(ControleJogoImpl.class.getName()).log(Level.SEVERE, null, ex);
+                }
+             } 
             notificarJogadaAconteceu(acaoAtual);
             notificarMudancaTabuleiro();
         }else{
@@ -300,12 +328,16 @@ public class ControleJogoImpl implements ControleJogo {
     @Override
     public void posicionaSapoRegia(String sapoClicked, int selectedColumn, int selectedRow) {
         if(util.naoFundo(selectedColumn, selectedRow) && util.naoFlor(selectedColumn,selectedRow) && util.naoSapo(selectedColumn, selectedRow)){
-            commandInvoker.execute(new ColocaSapo(Tabuleiro.getInstance(), selectedColumn,selectedRow,sapoClicked));
-            acaoAtual = "Fim da rodada! Iniciando uma nova";
-            notificarMudancaTabuleiro();
-            notificarRemoveListeners();
-            notificarJogadaAconteceu(acaoAtual);
-        }else{
+            try {
+                commandInvoker.execute(new ColocaSapo(Tabuleiro.getInstance(), selectedColumn,selectedRow,sapoClicked));
+                 acaoAtual = "Fim da rodada! Iniciando uma nova";
+                notificarMudancaTabuleiro();
+                notificarRemoveListeners();
+                notificarJogadaAconteceu(acaoAtual);
+            } catch (Exception ex) {
+                Logger.getLogger(ControleJogoImpl.class.getName()).log(Level.SEVERE, null, ex);
+            }
+           }else{
              acaoAtual = "Jardineiro S - Impossível colocar o sapo! Coloque numa regia clara vazia!";
              notificarSapoLocalInvalido(acaoAtual);          
         }      
@@ -337,9 +369,13 @@ public class ControleJogoImpl implements ControleJogo {
     @Override
     public void primeiraRodada() {
         int [] regiaEscura = util.getRegiaEscura();
-       commandInvoker.execute(new ColocaFlor(Tabuleiro.getInstance(), regiaEscura[0],regiaEscura[1], jardineiroJunior));
-        notificarJogadaAconteceu(acaoAtual);
-    }
+            try {
+                commandInvoker.execute(new ColocaFlor(Tabuleiro.getInstance(), regiaEscura[0],regiaEscura[1], jardineiroJunior));
+                notificarJogadaAconteceu(acaoAtual);
+            } catch (Exception ex) {
+                Logger.getLogger(ControleJogoImpl.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
 
     @Override
     public String getPlayer2() {
@@ -360,11 +396,31 @@ public class ControleJogoImpl implements ControleJogo {
     public void floracaoAutomatica() {
        int sapoAmarelo[] = util.getSapoAmarelo();
        int sapoVermelho[] = util.getSapoVermelho();
-       commandInvoker.execute(new ColocaFlor(Tabuleiro.getInstance(), sapoAmarelo[0], sapoAmarelo[1], "Amarelo"));
-       commandInvoker.execute(new ColocaFlor(Tabuleiro.getInstance(), sapoVermelho[0], sapoVermelho[1], "Vermelho"));
+            try {
+                commandInvoker.execute(new ColocaFlor(Tabuleiro.getInstance(), sapoAmarelo[0], sapoAmarelo[1], "Amarelo"));
+            } catch (Exception ex) {
+                Logger.getLogger(ControleJogoImpl.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            try {
+                commandInvoker.execute(new ColocaFlor(Tabuleiro.getInstance(), sapoVermelho[0], sapoVermelho[1], "Vermelho"));
+            } catch (Exception ex) {
+                Logger.getLogger(ControleJogoImpl.class.getName()).log(Level.SEVERE, null, ex);
+            }
+       this.nPlayer1 = -1;
+       this.nPlayer2 = -1;
        notificarFloracaoAutomatica();
     }
 
+    public int getRandom(int num,String player){
+    int retorno =-1;
+        if(player.equalsIgnoreCase(player1))
+        retorno = util.randomValue(p1, nPlayer1);
+    else
+       retorno =  util.randomValue(p1, nPlayer2);
+        
+        return retorno;
+    }
+    
     private void notificarFloracaoAutomatica(){
         for(Observador obs: observadores){
            obs.notificarFloracaoAutomatica();
@@ -393,7 +449,7 @@ public class ControleJogoImpl implements ControleJogo {
     private void notificarFimJogo(String msgErro) {
 		for (Observador obs:observadores)
 			obs.fimDeJogo(msgErro);
-	}
+    }
         
     private void notificarJogoIniciou(){
             for(Observador obs: observadores){
@@ -414,9 +470,17 @@ public class ControleJogoImpl implements ControleJogo {
 
     @Override
     public void moveCells(int selectedRow, int selectedColumn, int keyCode) {
-        commandInvoker.execute(new MoveNenufar(Tabuleiro.getInstance(), selectedColumn, selectedRow, player1, keyCode));
-        notificarMoveuCelula(this.acaoAtual);
-    }
+            try {
+                commandInvoker.execute(new MoveNenufar(Tabuleiro.getInstance(), selectedColumn, selectedRow, player1, keyCode));
+                if(Tabuleiro.getInstance().getStateMovement()){
+                    acaoAtual = "Jardineiro J - Movimento célula inválido!";
+                    notificarMoveuCelula(this.acaoAtual);
+                }else
+                    notificarMovimentoCelulaInvalido();
+            } catch (Exception ex) {
+                notificarMovimentoCelulaInvalido();
+            }
+       }
 
     @Override
     public void selecionaCelulaMovimentar(int selectedColumn, int selectedRow) {
@@ -479,6 +543,34 @@ public class ControleJogoImpl implements ControleJogo {
     private void notificarRemoveListeners() {
         for(Observador obs: observadores){
             obs.notificarRemoveListeners();
+        }
+    }
+
+    public int getAuxPosicaoClicadaVermelho() {
+        return auxPosicaoClicadaVermelho;
+    }
+
+    public int getAuxPosicaoClicadaAmarelo() {
+        return auxPosicaoClicadaAmarelo;
+    }
+
+    @Override
+    public void mudaValor() {            
+        int a =  new Random().nextInt(8)+1;
+        int v = new Random().nextInt(8)+1;
+        
+        if(this.player1.equalsIgnoreCase("Vermelho")){
+            p1[this.auxPosicaoClicadaAmarelo-1] =v;
+            p2[this.auxPosicaoClicadaVermelho-1] = a;
+        }else{
+           p1[this.auxPosicaoClicadaAmarelo-1] = a;
+           p2[this.auxPosicaoClicadaVermelho-1] = v;
+       }    
+    }
+
+    private void notificarMovimentoCelulaInvalido() {
+        for(Observador obs: observadores){
+            obs.notificarMovimentoCelulaInvalido(this.acaoAtual);
         }
     }
 

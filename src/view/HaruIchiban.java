@@ -70,6 +70,12 @@ public class HaruIchiban extends JFrame implements Observador {
     public void notificarRemoveListeners() {
         removeListener();
     }
+
+    @Override
+    public void notificarMovimentoCelulaInvalido(String acaoAtual) {
+        alteraDialog(acaoAtual);
+    }
+
     
     class HaruTableModel extends AbstractTableModel {
 
@@ -231,8 +237,8 @@ public class HaruIchiban extends JFrame implements Observador {
                 florAmarela1.addMouseListener(new MouseAdapter() {
                     public void mouseClicked(MouseEvent e) {
                         controle.florClicada("Amarelo");
-                        controle.setPlayerFirstNumber(controle.getp1()[0], "Amarelo");
                         controle.changeFlowers(1, "Amarelo");
+                        controle.setPlayerFirstNumber(controle.getp1()[0], "Amarelo");
                     }
                 });
 
@@ -241,8 +247,9 @@ public class HaruIchiban extends JFrame implements Observador {
                 florAmarela2.addMouseListener(new MouseAdapter() {
                     public void mouseClicked(MouseEvent e) {
                         controle.florClicada("Amarelo");
-                        controle.setPlayerFirstNumber(controle.getp1()[1], "Amarelo");
                         controle.changeFlowers(2, "Amarelo");
+                        controle.setPlayerFirstNumber(controle.getp1()[1], "Amarelo");
+                        
                     }
                 });
 
@@ -251,8 +258,9 @@ public class HaruIchiban extends JFrame implements Observador {
                 florAmarela3.addMouseListener(new MouseAdapter() {
                     public void mouseClicked(MouseEvent e) {
                         controle.florClicada("Amarelo");
+                                                controle.changeFlowers(3, "Amarelo");
                         controle.setPlayerFirstNumber(controle.getp1()[2], "Amarelo");
-                        controle.changeFlowers(3, "Amarelo");
+
                     }
                 });
 
@@ -261,8 +269,9 @@ public class HaruIchiban extends JFrame implements Observador {
                 florVermelha1.addMouseListener(new MouseAdapter() {
                     public void mouseClicked(MouseEvent e) {
                         controle.florClicada("Vermelho");
-                        controle.setPlayerFirstNumber(controle.getp2()[0], "Vermelho");
                         controle.changeFlowers(1, "Vermelho");
+                        controle.setPlayerFirstNumber(controle.getp2()[0], "Vermelho");
+                        
                     }
                 });
 
@@ -271,9 +280,10 @@ public class HaruIchiban extends JFrame implements Observador {
                 florVermelha2.addMouseListener(new MouseAdapter() {
                     public void mouseClicked(MouseEvent e) {
                         controle.florClicada("Vermelho");
-                        controle.setPlayerFirstNumber(controle.getp2()[1], "Vermelho");
                         controle.changeFlowers(2, "Vermelho");
-                    }
+                    
+                        controle.setPlayerFirstNumber(controle.getp2()[1], "Vermelho");
+                        }
                 });
 
                 florVermelha3 = new JLabel();
@@ -281,9 +291,10 @@ public class HaruIchiban extends JFrame implements Observador {
                 florVermelha3.addMouseListener(new MouseAdapter() {
                     public void mouseClicked(MouseEvent e) {
                         controle.florClicada("Vermelho");
-                        controle.setPlayerFirstNumber(controle.getp2()[2], "Vermelho");
                         controle.changeFlowers(3, "Vermelho");
-                    }
+                    
+                        controle.setPlayerFirstNumber(controle.getp2()[2], "Vermelho");
+                        }
                 });
 
                 jdialog.add(new JLabel("Player1 Escolha uma das flores para iniciar:"));
@@ -324,11 +335,11 @@ public class HaruIchiban extends JFrame implements Observador {
     }
 
     @Override
-    public void jardineiroJunior(int player) {
-        
+    public void jardineiroJunior(int player) { 
         if(player != 0){
             Jplayer = new JLabel("O Player " + player + " será o primeiro a jogar! Boa Sorte!");        
-         if (SwingUtilities.isEventDispatchThread()) {
+            removeListener();
+            if (SwingUtilities.isEventDispatchThread()) {
                 jdialog.add(Jplayer);
                 jdialog.validate();
                 jdialog.repaint();    
@@ -336,6 +347,9 @@ public class HaruIchiban extends JFrame implements Observador {
             }
         }else{
             Jplayer = new JLabel("FLORAÇÃO AUTOMÁTICA!!");
+            jdialog.add(Jplayer);
+            jdialog.validate();
+            jdialog.repaint();    
             controle.floracaoAutomatica();
         }
        
@@ -352,6 +366,7 @@ public class HaruIchiban extends JFrame implements Observador {
                     tabuleiro.setCellSelectionEnabled(true);
                     tabuleiro.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
                     jdialog.dispose();
+                    remove(jdialog);
                     controle.jogoIniciou();
                 }                   
         });
@@ -428,7 +443,24 @@ public class HaruIchiban extends JFrame implements Observador {
     @Override
     public void notificarFloracaoAutomatica() {
         mudouTabuleiro();
-        addJDialog();    
+        controle.mudaValor();
+        SwingUtilities.invokeLater(new Runnable() {
+                @Override
+            public void run() {    
+                Timer t = new Timer(5000, new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent arg0) {        
+                        
+                        removeListener();
+                        jdialog.dispose();
+                        remove(jdialog);
+                        addJDialog();
+                       }                   
+                });
+                t.setRepeats(false);
+                t.start();
+            }       
+        });
     }
     
     @Override

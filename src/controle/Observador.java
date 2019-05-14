@@ -45,5 +45,7 @@ public interface Observador {
     public void notificarRemoveListenerRegiaEscura(String acaoAtual);
 
     public void notificarRemoveListeners();
+
+    public void notificarMovimentoCelulaInvalido(String acaoAtual);
         
 }
