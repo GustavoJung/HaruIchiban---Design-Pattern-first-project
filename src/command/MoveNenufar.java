@@ -33,11 +33,7 @@ public class MoveNenufar extends TabuleiroCommand{
 
     @Override
     public void undo() {
-        try {
-            tabuleiroC.moveNenufarUndo(x,y);
-        } catch (Exception ex) {
-            Logger.getLogger(MoveNenufar.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override

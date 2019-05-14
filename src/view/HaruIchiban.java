@@ -76,7 +76,11 @@ public class HaruIchiban extends JFrame implements Observador {
         alteraDialog(acaoAtual);
     }
 
-    
+    @Override
+    public void notificarNovaRodada() {
+        addJDialog();
+    }
+
     class HaruTableModel extends AbstractTableModel {
 
     private static final long serialVersionUID = 1L;
@@ -379,6 +383,7 @@ public class HaruIchiban extends JFrame implements Observador {
     @Override
     public void notificarSapoColocado(String acaoAtual) {
         tabuleiro.removeMouseListener(listenerColocaSapo);
+     
         tabuleiro.addKeyListener(listenerMoveCells);
         alteraDialog(acaoAtual);
     }
@@ -486,22 +491,18 @@ public class HaruIchiban extends JFrame implements Observador {
         tabuleiro.removeKeyListener(listenerMoveCells);
     }
 
-    @Override
-    public void notificarSelecionouCelula(int selectedColumn, int selectedRow) {
-       tabuleiro.setSelectionForeground(Color.lightGray);
-       mudouTabuleiro();
-    }
 
     @Override
     public void notificarColocouFlor(String acao) {
         tabuleiro.removeMouseListener(listenerColocaFlor);
+    
         tabuleiro.addKeyListener(listenerMoveCells);
         alteraDialog(acao);
     }
 
     @Override
-    public void notificarMoveuCelula(String acaoAtual) {
-    tabuleiro.removeKeyListener(listenerMoveCells);
+    public void notificarMoveuCelula(String acaoAtual) {   
+        tabuleiro.removeKeyListener(listenerMoveCells);
         alteraDialog(acaoAtual);
         //controle.verificaPontos();
         tabuleiro.addMouseListener(listenerColocaRegiaEscura);
@@ -608,8 +609,7 @@ public class HaruIchiban extends JFrame implements Observador {
     };
     
     KeyListener listenerMoveCells = new KeyAdapter() {
-        public void keyPressed(KeyEvent k){
-            controle.selecionaCelulaMovimentar(tabuleiro.getSelectedColumn(),tabuleiro.getSelectedRow());
+        public void keyPressed(KeyEvent k){  
             controle.moveCells(tabuleiro.getSelectedRow(), tabuleiro.getSelectedColumn(), k.getKeyCode());
         }
     };

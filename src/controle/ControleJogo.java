@@ -64,7 +64,7 @@ public interface ControleJogo {
 
     public void moveCells(int selectedRow, int selectedColumn, int keyCode);
 
-    public void selecionaCelulaMovimentar(int selectedColumn, int selectedRow);
+
 
     public void novaRegiaEscura(int x, int y);
 

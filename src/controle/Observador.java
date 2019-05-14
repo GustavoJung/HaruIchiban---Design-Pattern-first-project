@@ -26,7 +26,7 @@ public interface Observador {
 
     public void removeListener();
 
-    public void notificarSelecionouCelula(int selectedColumn, int selectedRow);
+
 
     public void notificarColocouFlor(String acao);
 
@@ -47,5 +47,7 @@ public interface Observador {
     public void notificarRemoveListeners();
 
     public void notificarMovimentoCelulaInvalido(String acaoAtual);
+
+    public void notificarNovaRodada();
         
 }

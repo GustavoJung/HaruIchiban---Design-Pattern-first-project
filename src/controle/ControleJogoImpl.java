@@ -285,7 +285,7 @@ public class ControleJogoImpl implements ControleJogo {
         if(util.naoFundo(x, y) && util.naoFlor(x,y) && util.naoSapo(x, y)){
             try {
                 commandInvoker.execute(new ColocaSapo(Tabuleiro.getInstance(), x, y, cor));
-                acaoAtual = "Jardineiro J - Selecione a régia que deseja movimentar!!";
+                acaoAtual = "Jardineiro J - Selecione a régia que deseja movimentar!Use as setas!";
                 notificarSapoColocado();
             } catch (Exception ex) {
                 Logger.getLogger(ControleJogoImpl.class.getName()).log(Level.SEVERE, null, ex);
@@ -302,17 +302,18 @@ public class ControleJogoImpl implements ControleJogo {
             if(!util.temSapo(x, y).equalsIgnoreCase("")){
                 corSapoClicked = util.temSapo(x, y).substring(4);
                 acaoAtual = "Jardineiro S - Posicione o sapo " + this.corSapoClicked + "!";  
-                try {
-                    commandInvoker.execute(new NovaRegiaEscura(Tabuleiro.getInstance(), x, y, player1));
-                    colocaSapo("regiaEscura");      
-                } catch (Exception ex) {
-                    Logger.getLogger(ControleJogoImpl.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                }else{
+                    try {
+                        commandInvoker.execute(new NovaRegiaEscura(Tabuleiro.getInstance(), x, y, player1));
+                        colocaSapo("regiaEscura");      
+                    } catch (Exception ex) {
+                       Logger.getLogger(ControleJogoImpl.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+            }else{
                 try {
                     commandInvoker.execute(new NovaRegiaEscura(Tabuleiro.getInstance(), x, y, player1));
                        acaoAtual = "Fim da rodada! Iniciando uma nova";
                     notificarRemoveListenerNovaRegiaEscura(); 
+                    notificarNovaRodada();
                 } catch (Exception ex) {
                     Logger.getLogger(ControleJogoImpl.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -470,25 +471,19 @@ public class ControleJogoImpl implements ControleJogo {
 
     @Override
     public void moveCells(int selectedRow, int selectedColumn, int keyCode) {
-            try {
+        try {
                 commandInvoker.execute(new MoveNenufar(Tabuleiro.getInstance(), selectedColumn, selectedRow, player1, keyCode));
                 if(Tabuleiro.getInstance().getStateMovement()){
-                    acaoAtual = "Jardineiro J - Movimento célula inválido!";
-                    notificarMoveuCelula(this.acaoAtual);
+                   acaoAtual = " Jardineiro Sênior: Escolha uma nova régia escura!";
+                    notificarMoveuCelula(acaoAtual);
                 }else
-                    notificarMovimentoCelulaInvalido();
+                  acaoAtual = "Jardineiro J - Movimento célula inválido!";     
+                  notificarMovimentoCelulaInvalido();
             } catch (Exception ex) {
                 notificarMovimentoCelulaInvalido();
             }
        }
 
-    @Override
-    public void selecionaCelulaMovimentar(int selectedColumn, int selectedRow) {
-        this.acaoAtual = "Selecione a regia que deseja movimentar!";
-        for(Observador obs: observadores){
-            obs.notificarSelecionouCelula(selectedColumn, selectedRow);
-        }
-    }
 
     private void notificaRemoveListenerFlor(String acao) {
         for(Observador obs: observadores){
@@ -497,9 +492,10 @@ public class ControleJogoImpl implements ControleJogo {
     }
 
     private void notificarMoveuCelula(String acaoAtual) {
-        acaoAtual = " Jardineiro Sênior: Escolha uma nova régia escura!";
-        for(Observador obs: observadores){
-            obs.notificarMoveuCelula(acaoAtual);
+            for(Observador obs: observadores){
+            obs.removeListener();
+            obs.notificarMoveuCelula(this.acaoAtual);
+            
         }     
     }
 
@@ -571,6 +567,15 @@ public class ControleJogoImpl implements ControleJogo {
     private void notificarMovimentoCelulaInvalido() {
         for(Observador obs: observadores){
             obs.notificarMovimentoCelulaInvalido(this.acaoAtual);
+        }
+    }
+
+    private void notificarNovaRodada() {
+        this.nPlayer1 =-1;
+        this.nPlayer2 =-1;
+        notificarMudancaTabuleiro();
+        for(Observador obs: observadores){
+            obs.notificarNovaRodada();
         }
     }
 
