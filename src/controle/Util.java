@@ -5,9 +5,7 @@
  */
 package controle;
 
-import model.FlorAmarela;
 import model.Peca;
-import model.RegiaEscura;
 import tabuleiro.Tabuleiro;
 
 /**

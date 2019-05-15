@@ -14,7 +14,6 @@ import java.util.List;
  */
 public class CommandInvoker {
     private List<Command> imediatos = new ArrayList<>();
-	
 	private List<Command> todos = new ArrayList<>();
 	
 	private List<Command> undo = new ArrayList<>();
@@ -53,7 +52,7 @@ public class CommandInvoker {
 		}		
 	}
 	
-	public void execute(Command comm) throws Exception{
+	public void execute(Command comm) {
 		comm.execute();
 		todos.add(comm);
 	}

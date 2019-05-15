@@ -10,11 +10,11 @@ import tabuleiro.Tabuleiro;
 
 /**
  *
- * @author mrcar
+ * @author gustavo Jung
  */
 public class TabuleiroConcreto extends TabuleiroBuilder{
-    Tabuleiro tabuleiro;
-    ConcreteFactory factory = new ConcreteFactory();
+    private Tabuleiro tabuleiro;
+    private ConcreteFactory factory = new ConcreteFactory();
     
     @Override
     public void reset() {
@@ -54,12 +54,12 @@ public class TabuleiroConcreto extends TabuleiroBuilder{
     @Override
     public void construirFundo() {
         for(int i=0; i<5; i++){
-                    for(int j=0; j<5; j++){
-                        if(getTabuleiro().getTabuleiro()[i][j] == null){
-                            tabuleiro.getTabuleiro()[i][j] = factory.criarFundoTabuleiro();
-                        }
-                    }
+            for(int j=0; j<5; j++){
+                if(getTabuleiro().getTabuleiro()[i][j] == null){
+                        tabuleiro.getTabuleiro()[i][j] = factory.criarFundoTabuleiro();
                 }
+            }
+        }
     }
 
     @Override

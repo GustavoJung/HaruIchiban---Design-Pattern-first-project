@@ -5,21 +5,21 @@
  */
 package builder;
 
-import builder.TabuleiroBuilder;
 
 /**
  *
- * @author mrcar
+ * @author Gustavo Jung
  */
+
 public class Director {
-   private TabuleiroBuilder tabuleiroB;
+   
+    private TabuleiroBuilder tabuleiroB;
    
     public Director(TabuleiroBuilder tabuleiroB) {
 	this.tabuleiroB = tabuleiroB;
     }
 	
     public void construir() {         
-        tabuleiroB.reset();
         tabuleiroB.build();
     }
 }

@@ -10,7 +10,7 @@ package command;
  * @author mrcar
  */
 public interface Command {
-    void execute();
+        void execute();
 	void undo();
 	void redo();
 }

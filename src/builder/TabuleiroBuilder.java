@@ -9,7 +9,7 @@ import tabuleiro.Tabuleiro;
 
 /**
  *
- * @author mrcar
+ * @author Gustavo Jung
  */
 public abstract class TabuleiroBuilder {
     

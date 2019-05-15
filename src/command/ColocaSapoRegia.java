@@ -4,20 +4,20 @@
  * and open the template in the editor.
  */
 package command;
-import controle.ControleJogo;
 
+import controle.ControleJogo;
 
 /**
  *
- * @author mrcar
+ * @author 08205268940
  */
-public class ColocaFlor implements Command{
+public class ColocaSapoRegia implements Command{
 
     ControleJogo controlador;
     int x,y;
     String cor;
     
-    public ColocaFlor(ControleJogo controle, int x, int y, String cor) {
+    public ColocaSapoRegia(ControleJogo controle, int x, int y, String cor) {
         this.controlador = controle;
         this.x = x;
         this.y = y;
@@ -26,7 +26,7 @@ public class ColocaFlor implements Command{
     
     @Override
     public void execute() {
-      controlador.colocaFlor(cor,x, y );
+      controlador.posicionaSapoRegia(cor,x, y );
     }
 
     @Override
@@ -38,6 +38,5 @@ public class ColocaFlor implements Command{
     public void redo() {
     
     }
-    
     
 }

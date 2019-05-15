@@ -5,7 +5,6 @@
  */
 package tabuleiro;
 
-import model.Flor;
 import model.FlorAmarela;
 import model.FlorVermelha;
 import model.FundoTabuleiro;
@@ -16,12 +15,21 @@ import model.SapoVermelho;
 
 /**
  *
- * @author mrcar
+ * @author Gustavo Jung
  */
 public class Tabuleiro {
 
     private Peca[][] tabuleiro;
     private boolean stateMovement = true;
+
+    private static Tabuleiro instance;
+
+    public synchronized static Tabuleiro getInstance() {
+        if (instance == null) {
+            instance = new Tabuleiro();
+        }
+        return instance;
+    }
 
     public boolean getStateMovement() {
         return stateMovement;
@@ -34,16 +42,7 @@ public class Tabuleiro {
     private Tabuleiro() {
         this.tabuleiro = new Peca[5][5];
     }
-
-    private static Tabuleiro instance;
-
-    public synchronized static Tabuleiro getInstance() {
-        if (instance == null) {
-            instance = new Tabuleiro();
-        }
-        return instance;
-    }
-
+    
     public void colocaFlor(int x, int y, String cor) {
         if (cor.equalsIgnoreCase("Vermelho")) {
             tabuleiro[x][y] = new FlorVermelha();
@@ -61,7 +60,7 @@ public class Tabuleiro {
 
     }
 
-    public void moveNenufar(int x, int y, int key) throws Exception {
+    public void moveNenufar(int x, int y, int key) {
         Peca aux = null;
         switch (key) {
             case 39:
@@ -89,7 +88,7 @@ public class Tabuleiro {
         tabuleiro[x][y] = new RegiaEscura();
     }
 
-    private void moveDireita(int x, int y) throws Exception {
+    private void moveDireita(int x, int y) {
         int aux1 = x;
         Peca aux2 = null;
         Peca aux = tabuleiro[aux1][y];
@@ -102,6 +101,7 @@ public class Tabuleiro {
             if (aux2.getImagem().toString().equalsIgnoreCase("imagens/fundoTabuleiro.png")) {
                 tabuleiro[x][y] = new FundoTabuleiro();
                 tabuleiro[x + 1][y] = aux;
+                stateMovement = true;
             } else if (x + 1 > 5) {
                 stateMovement = false;
             } else {
@@ -131,7 +131,9 @@ public class Tabuleiro {
                         }
                         cont++;
                         tabuleiro[x][y] = new FundoTabuleiro();
+                        
                     }
+                    stateMovement = true;
                 }
             }
         } else {
@@ -140,7 +142,7 @@ public class Tabuleiro {
         
     }
 
-    private void moveEsquerda(int x, int y) throws Exception {
+    private void moveEsquerda(int x, int y) {
         int aux1 = x;
         Peca aux2 = null;
         Peca aux = tabuleiro[aux1][y];
@@ -152,6 +154,7 @@ public class Tabuleiro {
             if (aux2.getImagem().toString().equalsIgnoreCase("imagens/fundoTabuleiro.png")) {
                 tabuleiro[x][y] = new FundoTabuleiro();
                 tabuleiro[x - 1][y] = aux;
+                stateMovement = true;
             } else if (x - 1 < 0) {
                 stateMovement = false;
             } else {
@@ -179,6 +182,7 @@ public class Tabuleiro {
                         cont++;
                         tabuleiro[x][y] = new FundoTabuleiro();
                     }
+                    stateMovement = true;
                 }
             }
         } else {

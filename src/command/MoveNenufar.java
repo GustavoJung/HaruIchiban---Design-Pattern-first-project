@@ -5,30 +5,28 @@
  */
 package command;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import tabuleiro.Tabuleiro;
+import controle.ControleJogo;
 
 /**
  *
  * @author mrcar
  */
-public class MoveNenufar extends TabuleiroCommand{
+public class MoveNenufar implements Command{
 
+    ControleJogo controlador;
     int keyPressed;
-    
-    public MoveNenufar(Tabuleiro tabuleiro, int x, int y, String cor,int key) {
-        super(tabuleiro, x, y, cor);
+    int x,y;
+  
+    public MoveNenufar(ControleJogo controle, int x, int y,int key) {
         this.keyPressed = key;
+        this.controlador = controle;
+        this.x = x;
+        this.y = y;
     }
 
     @Override
-    public void execute() {
-        try {
-            tabuleiroC.moveNenufar(x, y, keyPressed);
-        } catch (Exception ex) {
-            Logger.getLogger(MoveNenufar.class.getName()).log(Level.SEVERE, null, ex);
-        }
+    public void execute() {  
+       controlador.moveCells(y, x, keyPressed); 
     }
 
     @Override

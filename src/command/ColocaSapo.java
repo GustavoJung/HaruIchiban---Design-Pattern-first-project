@@ -5,21 +5,28 @@
  */
 package command;
 
-import tabuleiro.Tabuleiro;
+import controle.ControleJogo;
 
 /**
  *
  * @author 08205268940
  */
-public class ColocaSapo extends TabuleiroCommand{
+public class ColocaSapo implements Command{
      
-    public ColocaSapo(Tabuleiro tabuleiro, int x, int y, String cor) {
-        super(tabuleiro, x,  y,cor);
+    ControleJogo controlador;
+    int x,y;
+    String cor;
+    
+    public ColocaSapo(ControleJogo controle, int x, int y, String cor) {
+        this.controlador = controle;
+        this.x = x;
+        this.y = y;
+        this.cor= cor;
     }
     
     @Override
     public void execute() {
-       tabuleiroC.colocaSapo(x, y, cor);
+       controlador.posicionaSapo(cor, x, y);
     }
 
     @Override

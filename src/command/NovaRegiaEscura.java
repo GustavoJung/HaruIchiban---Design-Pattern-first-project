@@ -5,21 +5,26 @@
  */
 package command;
 
-import tabuleiro.Tabuleiro;
+import controle.ControleJogo;
 
 /**
  *
  * @author mrcar
  */
-public class NovaRegiaEscura extends TabuleiroCommand{
+public class NovaRegiaEscura implements Command{
 
-    public NovaRegiaEscura(Tabuleiro tabuleiro, int x, int y, String cor) {
-        super(tabuleiro, x, y, cor);
+    ControleJogo controlador;
+    int x,y;   
+    
+    public NovaRegiaEscura(ControleJogo controle, int x, int y) {
+        this.controlador = controle;
+        this.x = x;
+        this.y = y;
     }
 
     @Override
     public void execute() {
-        tabuleiroC.novaRegiaEscura(x,y);
+        controlador.novaRegiaEscura(x,y);
     }
 
     @Override

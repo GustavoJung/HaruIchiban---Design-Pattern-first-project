@@ -22,32 +22,30 @@ public interface Observador {
         
         void notificarJogadaAconteceu(String acaoAtual);
 
-    public void notificarColocarSapo(String acao);
+        void notificarColocarSapo(String acao);
 
-    public void removeListener();
+        void removeListener();
 
+        void notificarColocouFlor(String acao);
 
+        void notificarMoveuCelula(String acaoAtual);
 
-    public void notificarColocouFlor(String acao);
-
-    public void notificarMoveuCelula(String acaoAtual);
-
-    public void notificarFlorLocalErrado(String acaoAtual);
+        void notificarFlorLocalErrado(String acaoAtual);
     
-    void notificarNovaRegiaEscura(String acaoAtual);
+        void notificarNovaRegiaEscura(String acaoAtual);
 
-    public void notificarSapoLocalErrado(String acaoAtual);
+        void notificarSapoLocalErrado(String acaoAtual);
 
-    public void notificarSapoColocado(String acaoAtual);
+        void notificarSapoColocado(String acaoAtual);
 
-    public void notificarRegiaEscuraInvalida(String acaoAtual);
+        void notificarRegiaEscuraInvalida(String acaoAtual);
 
-    public void notificarRemoveListenerRegiaEscura(String acaoAtual);
+        void notificarRemoveListenerRegiaEscura(String acaoAtual);
 
-    public void notificarRemoveListeners();
+        void notificarRemoveListeners();
 
-    public void notificarMovimentoCelulaInvalido(String acaoAtual);
+        void notificarMovimentoCelulaInvalido(String acaoAtual);
 
-    public void notificarNovaRodada();
+        void notificarNovaRodada();
         
 }
