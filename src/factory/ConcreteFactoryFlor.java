@@ -10,7 +10,7 @@ import model.FlorAmarela;
 import model.FlorVermelha;
 /**
  *
- * @author mrcar
+ * @author Gustavo Jung
  */
 public class ConcreteFactoryFlor extends FactoryFlor{
 

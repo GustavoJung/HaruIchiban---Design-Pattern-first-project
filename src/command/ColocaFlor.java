@@ -31,12 +31,12 @@ public class ColocaFlor implements Command{
 
     @Override
     public void undo() {
-        
+        //not necessary yet
     }
 
     @Override
     public void redo() {
-    
+        //not necessary yet
     }
     
     

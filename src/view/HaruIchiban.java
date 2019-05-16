@@ -589,32 +589,37 @@ public class HaruIchiban extends JFrame implements Observador {
     //Listeners
     MouseListener listenerColocaFlor = new MouseAdapter() {
         public void mouseClicked(MouseEvent e) {
-            commandInvoker.execute(new ColocaFlor(controle, tabuleiro.getSelectedColumn(), tabuleiro.getSelectedRow(), controle.getJardineiroS()));
+            commandInvoker.execute(new ColocaFlor(controle, tabuleiro.getSelectedColumn(),
+                    tabuleiro.getSelectedRow(), controle.getJardineiroS()));
         }
     };
 
     MouseListener listenerColocaSapo = new MouseAdapter() {
         public void mouseClicked(MouseEvent e) {
-            commandInvoker.execute(new ColocaSapo(controle, tabuleiro.getSelectedColumn(), tabuleiro.getSelectedRow(), controle.getSapoClicked()));
+            commandInvoker.execute(new ColocaSapo(controle, tabuleiro.getSelectedColumn(), 
+                    tabuleiro.getSelectedRow(), controle.getSapoClicked()));
         }
     };
 
     MouseListener listenerColocaSapoRegia = new MouseAdapter() {
         public void mouseClicked(MouseEvent e) {
-            commandInvoker.execute(new ColocaSapoRegia(controle, tabuleiro.getSelectedColumn(), tabuleiro.getSelectedRow(), controle.getSapoClicked()));
+            commandInvoker.execute(new ColocaSapoRegia(controle, tabuleiro.getSelectedColumn(),
+                    tabuleiro.getSelectedRow(), controle.getSapoClicked()));
         }
     };
 
     MouseListener listenerColocaRegiaEscura = new MouseAdapter() {
         public void mouseClicked(MouseEvent e) {
-            commandInvoker.execute(new NovaRegiaEscura(controle, tabuleiro.getSelectedColumn(), tabuleiro.getSelectedRow()));
+            commandInvoker.execute(new NovaRegiaEscura(controle, tabuleiro.getSelectedColumn(), 
+                    tabuleiro.getSelectedRow()));
         }
     };
 
     KeyListener listenerMoveCells = new KeyAdapter() {
         @Override
         public void keyPressed(KeyEvent k) {
-            commandInvoker.execute(new MoveNenufar(controle, tabuleiro.getSelectedRow(), tabuleiro.getSelectedColumn(), k.getKeyCode()));
+            commandInvoker.execute(new MoveNenufar(controle, tabuleiro.getSelectedRow(), 
+                    tabuleiro.getSelectedColumn(), k.getKeyCode()));
         }
     };
 }
