@@ -5,7 +5,7 @@
  */
 package builder;
 
-import tabuleiro.Tabuleiro;
+import tabuleiro.ControleTabuleiro;
 
 /**
  *
@@ -15,7 +15,7 @@ public abstract class TabuleiroBuilder {
     
     public abstract void reset();
     
-    public abstract Tabuleiro getTabuleiro();
+    public abstract ControleTabuleiro getTabuleiro();
     
     public abstract void construirRegias();
 
@@ -23,5 +23,5 @@ public abstract class TabuleiroBuilder {
 
     public abstract void construirFundo();
 
-    public abstract void build();
+    
 }

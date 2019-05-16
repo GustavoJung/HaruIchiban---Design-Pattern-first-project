@@ -6,7 +6,7 @@
 package controle;
 
 import model.Peca;
-import tabuleiro.Tabuleiro;
+import tabuleiro.ControleTabuleiro;
 
 /**
  *
@@ -55,7 +55,7 @@ public class Util {
      }
 
      public int[] getRegiaEscura(){
-          Peca[][]tabuleiro = Tabuleiro.getInstance().getTabuleiro();
+          Peca[][]tabuleiro = ControleTabuleiro.getInstance().getTabuleiro();
           int [] retorno = new int[2] ;
           for(int i=0; i<5; i++){
               for( int j=0; j<5; j++){
@@ -71,7 +71,7 @@ public class Util {
      }
      
      public int[] getSapoAmarelo(){
-          Peca[][]tabuleiro = Tabuleiro.getInstance().getTabuleiro();
+          Peca[][]tabuleiro = ControleTabuleiro.getInstance().getTabuleiro();
           int [] retorno = new int[2] ;
           for(int i=0; i<5; i++){
               for( int j=0; j<5; j++){
@@ -86,7 +86,7 @@ public class Util {
           return retorno;
      }
      public int[] getSapoVermelho(){
-          Peca[][]tabuleiro = Tabuleiro.getInstance().getTabuleiro();
+          Peca[][]tabuleiro = ControleTabuleiro.getInstance().getTabuleiro();
           int [] retorno = new int[2] ;
           for(int i=0; i<5; i++){
               for( int j=0; j<5; j++){
@@ -104,9 +104,9 @@ public class Util {
      public String temSapo(int x, int y){
          String retorno = "";
          
-         if(Tabuleiro.getInstance().getTabuleiro()[x][y].getImagem().toString().equalsIgnoreCase("imagens/sapoVermelho.png")){
+         if(ControleTabuleiro.getInstance().getTabuleiro()[x][y].getImagem().toString().equalsIgnoreCase("imagens/sapoVermelho.png")){
              retorno = "sapoVermelho";            
-         }else if(Tabuleiro.getInstance().getTabuleiro()[x][y].getImagem().toString().equalsIgnoreCase("imagens/sapoAmarelo.png")) {
+         }else if(ControleTabuleiro.getInstance().getTabuleiro()[x][y].getImagem().toString().equalsIgnoreCase("imagens/sapoAmarelo.png")) {
                  retorno = "sapoAmarelo";  
         }
          return retorno;
@@ -115,7 +115,7 @@ public class Util {
      public boolean naoFundo(int x, int y){
          boolean retorno = true;
          
-         if(Tabuleiro.getInstance().getTabuleiro()[x][y].getImagem().toString().equalsIgnoreCase("imagens/fundoTabuleiro.png"))
+         if(ControleTabuleiro.getInstance().getTabuleiro()[x][y].getImagem().toString().equalsIgnoreCase("imagens/fundoTabuleiro.png"))
              retorno = false;
          
          return retorno;
@@ -124,8 +124,8 @@ public class Util {
     public boolean naoFlor(int x, int y) {
         boolean retorno = true;
          
-         if(Tabuleiro.getInstance().getTabuleiro()[x][y].getImagem().toString().equalsIgnoreCase("imagens/florAmarela.png") ||
-         Tabuleiro.getInstance().getTabuleiro()[x][y].getImagem().toString().equalsIgnoreCase("imagens/florVermelha.png"))
+         if(ControleTabuleiro.getInstance().getTabuleiro()[x][y].getImagem().toString().equalsIgnoreCase("imagens/florAmarela.png") ||
+         ControleTabuleiro.getInstance().getTabuleiro()[x][y].getImagem().toString().equalsIgnoreCase("imagens/florVermelha.png"))
              retorno = false;
          
          return retorno;
@@ -134,8 +134,8 @@ public class Util {
     public boolean naoSapo(int x, int y) {
         boolean retorno = true;
          
-         if(Tabuleiro.getInstance().getTabuleiro()[x][y].getImagem().toString().equalsIgnoreCase("imagens/sapoAmarelo.png") ||
-         Tabuleiro.getInstance().getTabuleiro()[x][y].getImagem().toString().equalsIgnoreCase("imagens/sapoVermelho.png"))
+         if(ControleTabuleiro.getInstance().getTabuleiro()[x][y].getImagem().toString().equalsIgnoreCase("imagens/sapoAmarelo.png") ||
+         ControleTabuleiro.getInstance().getTabuleiro()[x][y].getImagem().toString().equalsIgnoreCase("imagens/sapoVermelho.png"))
              retorno = false;
          
          return retorno;

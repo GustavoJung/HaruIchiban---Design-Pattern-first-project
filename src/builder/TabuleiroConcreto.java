@@ -6,23 +6,24 @@
 package builder;
 
 import factory.ConcreteFactory;
-import tabuleiro.Tabuleiro;
+import factory.ConcreteFactorySapo;
+import tabuleiro.ControleTabuleiro;
 
 /**
  *
  * @author gustavo Jung
  */
 public class TabuleiroConcreto extends TabuleiroBuilder{
-    private Tabuleiro tabuleiro;
+    private ControleTabuleiro tabuleiro;
     private ConcreteFactory factory = new ConcreteFactory();
     
     @Override
     public void reset() {
-        this.tabuleiro = Tabuleiro.getInstance();
+        this.tabuleiro = ControleTabuleiro.getInstance();
     }
 
     @Override
-    public Tabuleiro getTabuleiro() {
+    public ControleTabuleiro getTabuleiro() {
         return this.tabuleiro;
     }
 
@@ -47,8 +48,8 @@ public class TabuleiroConcreto extends TabuleiroBuilder{
 
     @Override
     public void construirSapos() {
-        tabuleiro.getTabuleiro()[2][1] = factory.criarSapoAmarelo();
-        tabuleiro.getTabuleiro()[3][3] = factory.criarSapoVermelho();
+        tabuleiro.getTabuleiro()[2][1] = ConcreteFactorySapo.getInstance().criarSapoAmarelo();
+        tabuleiro.getTabuleiro()[3][3] = ConcreteFactorySapo.getInstance().criarSapoVermelho();
     }
 
     @Override
@@ -62,12 +63,6 @@ public class TabuleiroConcreto extends TabuleiroBuilder{
         }
     }
 
-    @Override
-    public void build() {
-        reset();
-        construirRegias();
-        construirSapos();
-        construirFundo();
-    }
+   
     
 }

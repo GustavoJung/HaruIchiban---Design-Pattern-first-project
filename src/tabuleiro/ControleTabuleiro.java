@@ -5,28 +5,27 @@
  */
 package tabuleiro;
 
-import model.FlorAmarela;
-import model.FlorVermelha;
+import factory.ConcreteFactoryFlor;
+import factory.ConcreteFactorySapo;
 import model.FundoTabuleiro;
 import model.Peca;
 import model.RegiaEscura;
-import model.SapoAmarelo;
-import model.SapoVermelho;
+
 
 /**
  *
  * @author Gustavo Jung
  */
-public class Tabuleiro {
+public class ControleTabuleiro {
 
     private Peca[][] tabuleiro;
     private boolean stateMovement = true;
 
-    private static Tabuleiro instance;
+    private static ControleTabuleiro instance;
 
-    public synchronized static Tabuleiro getInstance() {
+    public synchronized static ControleTabuleiro getInstance() {
         if (instance == null) {
-            instance = new Tabuleiro();
+            instance = new ControleTabuleiro();
         }
         return instance;
     }
@@ -39,23 +38,23 @@ public class Tabuleiro {
         return tabuleiro;
     }
 
-    private Tabuleiro() {
+    private ControleTabuleiro() {
         this.tabuleiro = new Peca[5][5];
     }
     
     public void colocaFlor(int x, int y, String cor) {
         if (cor.equalsIgnoreCase("Vermelho")) {
-            tabuleiro[x][y] = new FlorVermelha();
+            tabuleiro[x][y] = ConcreteFactoryFlor.getInstance().criarFlorVermelha();
         } else {
-            tabuleiro[x][y] = new FlorAmarela();
+            tabuleiro[x][y] = ConcreteFactoryFlor.getInstance().criarFlorAmarela();
         }
     }
 
     public void colocaSapo(int x, int y, String cor) {
         if (cor.equalsIgnoreCase("Vermelho")) {
-            tabuleiro[x][y] = new SapoVermelho();
+            tabuleiro[x][y] = ConcreteFactorySapo.getInstance().criarSapoVermelho();
         } else {
-            tabuleiro[x][y] = new SapoAmarelo();
+            tabuleiro[x][y] = ConcreteFactorySapo.getInstance().criarSapoAmarelo();
         }
 
     }
@@ -70,16 +69,10 @@ public class Tabuleiro {
                 moveEsquerda(x, y);
                 break;
             case 38:
-
-                aux = tabuleiro[x][y];
-                tabuleiro[x][y] = new FundoTabuleiro();
-                tabuleiro[x][y - 1] = aux;
+                moveParaCima(x, y);
                 break;
             case 40:
-
-                aux = tabuleiro[x][y];
-                tabuleiro[x][y] = new FundoTabuleiro();
-                tabuleiro[x][y + 1] = aux;
+                moveParaBaixo(x, y);
                 break;
         }
     }
@@ -178,6 +171,108 @@ public class Tabuleiro {
                         if (aux1 - 1 > 0) {
                             aux1--;
                             aux2 = tabuleiro[aux1-1][y];
+                        }
+                        cont++;
+                        tabuleiro[x][y] = new FundoTabuleiro();
+                    }
+                    stateMovement = true;
+                }
+            }
+        } else {
+            stateMovement = false;
+        }
+    }
+    
+    private void moveParaBaixo( int x ,int y){
+           int aux1 = y;
+        Peca aux2 = null;
+        Peca aux = tabuleiro[x][aux1];
+
+        if (aux1 + 1 < 5) {
+            aux2 = tabuleiro[x][aux1+1];
+        }
+        
+     if (aux2 != null) {
+            if (aux2.getImagem().toString().equalsIgnoreCase("imagens/fundoTabuleiro.png")) {
+                tabuleiro[x][y] = new FundoTabuleiro();
+                tabuleiro[x][y + 1] = aux;
+                stateMovement = true;
+            } else if (y + 1 > 5) {
+                stateMovement = false;
+            } else {
+                int auxiliar = 0;
+
+                for (int i = y; i < 5; i++) {
+                    if (!tabuleiro[x][i].getImagem().toString().equalsIgnoreCase("imagens/fundoTabuleiro.png")) {
+                        auxiliar++;
+                    }else
+                       
+                        break;
+                }
+
+                if (y + auxiliar >= 5) {
+                    stateMovement = false;
+                } else {
+                    int cont = 0;
+                    while (cont < auxiliar) {
+                        tabuleiro[x][aux1 +1] = aux;
+                        aux = aux2;
+
+                        if (aux1 + 1 < 4) {
+                            aux1++;
+                            
+                           
+                            aux2 = tabuleiro[x][aux1 + 1];
+                            
+                        }
+                        cont++;
+                        tabuleiro[x][y] = new FundoTabuleiro();
+                        
+                    }
+                    stateMovement = true;
+                }
+            }
+        } else {
+            stateMovement = false;
+        }
+    }
+    
+    private void moveParaCima(int x , int y){
+        int aux1 = y;
+        Peca aux2 = null;
+        Peca aux = tabuleiro[x][aux1];
+        
+        if(aux1 - 1 >= 0){
+            aux2 = tabuleiro[x][aux1 - 1];    
+        }
+         if (aux2 != null) {
+            if (aux2.getImagem().toString().equalsIgnoreCase("imagens/fundoTabuleiro.png")) {
+                tabuleiro[x][y] = new FundoTabuleiro();
+                tabuleiro[x][y -1] = aux;
+                stateMovement = true;
+            } else if (y - 1 < 0) {
+                stateMovement = false;
+            } else {
+                
+                int auxiliar = 5;
+                for (int i = y; i > 0; i--) {
+                    if (!tabuleiro[x][i].getImagem().toString().equalsIgnoreCase("imagens/fundoTabuleiro.png")) {
+                        auxiliar--;
+                    }else{
+                        break;
+                    }
+                }
+                if (y - auxiliar < 0) {
+                    stateMovement = false;
+                } else {
+                    int cont = 0;
+                    while (cont < auxiliar) {
+                        tabuleiro[x][aux1 - 1] = aux;
+                        aux = aux2;
+
+                        if (aux1 - 1 > 0) {
+                            aux1--;
+                            aux2 = tabuleiro[x][aux1 - 1];
                         }
                         cont++;
                         tabuleiro[x][y] = new FundoTabuleiro();

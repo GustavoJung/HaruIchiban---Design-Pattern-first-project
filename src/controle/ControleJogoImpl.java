@@ -9,7 +9,7 @@ import java.util.Random;
 import javax.swing.Icon;
 
 import model.Peca;
-import tabuleiro.Tabuleiro;
+import tabuleiro.ControleTabuleiro;
 import builder.Director;
 
 
@@ -158,10 +158,10 @@ public class ControleJogoImpl implements ControleJogo {
             if (!util.temSapo(x, y).equalsIgnoreCase("")) {
                 corSapoClicked = util.temSapo(x, y).substring(4);
                 acaoAtual = "Jardineiro S- Posicione o sapo " + this.corSapoClicked + "!";     
-                    Tabuleiro.getInstance().colocaFlor(x, y, cor);
+                    ControleTabuleiro.getInstance().colocaFlor(x, y, cor);
                     colocaSapo(this.corSapoClicked);
             } else {              
-                    Tabuleiro.getInstance().colocaFlor(x, y, cor);
+                    ControleTabuleiro.getInstance().colocaFlor(x, y, cor);
                     acaoAtual = "Jardineiro J -Selecione a régia que deseja movimentar!!";
                     notificaRemoveListenerFlor(acaoAtual);
             }
@@ -175,7 +175,7 @@ public class ControleJogoImpl implements ControleJogo {
     @Override
     public void posicionaSapo(String cor, int x, int y) {
         if (util.naoFundo(x, y) && util.naoFlor(x, y) && util.naoSapo(x, y)) {
-             Tabuleiro.getInstance().colocaSapo(x, y, cor);
+             ControleTabuleiro.getInstance().colocaSapo(x, y, cor);
                 acaoAtual = "Jardineiro J - Selecione a régia que deseja movimentar!Use as setas!";
                 notificarSapoColocado();
         } else {
@@ -190,10 +190,10 @@ public class ControleJogoImpl implements ControleJogo {
             if (!util.temSapo(x, y).equalsIgnoreCase("")) {
                 corSapoClicked = util.temSapo(x, y).substring(4);
                 acaoAtual = "Jardineiro S - Posicione o sapo " + this.corSapoClicked + "!";
-                Tabuleiro.getInstance().novaRegiaEscura(x, y);
+                ControleTabuleiro.getInstance().novaRegiaEscura(x, y);
                 colocaSapo("regiaEscura");
             } else {               
-                    Tabuleiro.getInstance().novaRegiaEscura(x, y);
+                    ControleTabuleiro.getInstance().novaRegiaEscura(x, y);
                     acaoAtual = "Fim da rodada! Iniciando uma nova";
                     notificarRemoveListenerNovaRegiaEscura();
                     notificarNovaRodada();              
@@ -209,7 +209,7 @@ public class ControleJogoImpl implements ControleJogo {
     @Override
     public void posicionaSapoRegia(String sapoClicked, int selectedColumn, int selectedRow) {
         if (util.naoFundo(selectedColumn, selectedRow) && util.naoFlor(selectedColumn, selectedRow) && util.naoSapo(selectedColumn, selectedRow)) {
-                Tabuleiro.getInstance().colocaSapo(selectedColumn, selectedRow, sapoClicked);
+                ControleTabuleiro.getInstance().colocaSapo(selectedColumn, selectedRow, sapoClicked);
                 acaoAtual = "Fim da rodada! Iniciando uma nova";
                 notificarMudancaTabuleiro();
                 notificarRemoveListeners();
@@ -231,7 +231,7 @@ public class ControleJogoImpl implements ControleJogo {
     @Override
     public void primeiraRodada() {
         int[] regiaEscura = util.getRegiaEscura();
-        Tabuleiro.getInstance().colocaFlor(regiaEscura[0], regiaEscura[1], jardineiroJunior);
+        ControleTabuleiro.getInstance().colocaFlor(regiaEscura[0], regiaEscura[1], jardineiroJunior);
         notificarJogadaAconteceu(acaoAtual);
     }
 
@@ -262,8 +262,8 @@ public class ControleJogoImpl implements ControleJogo {
     @Override
     public void moveCells(int selectedRow, int selectedColumn, int keyCode) {
 
-        Tabuleiro.getInstance().moveNenufar(selectedRow, selectedColumn, keyCode);
-        if (Tabuleiro.getInstance().getStateMovement()) {
+        ControleTabuleiro.getInstance().moveNenufar(selectedRow, selectedColumn, keyCode);
+        if (ControleTabuleiro.getInstance().getStateMovement()) {
             acaoAtual = " Jardineiro Sênior: Escolha uma nova régia escura!";
             notificarMoveuCelula(acaoAtual);
         } else {

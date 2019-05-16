@@ -20,6 +20,9 @@ public class Director {
     }
 	
     public void construir() {         
-        tabuleiroB.build();
+        tabuleiroB.reset();
+        tabuleiroB.construirFundo();
+        tabuleiroB.construirRegias();
+        tabuleiroB.construirSapos();
     }
 }
