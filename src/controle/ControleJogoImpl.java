@@ -11,6 +11,7 @@ import javax.swing.Icon;
 import model.Peca;
 import tabuleiro.ControleTabuleiro;
 import builder.Director;
+import controle.pontuacaoRodada.PontuacaoRodada;
 
 
 public class ControleJogoImpl implements ControleJogo {
@@ -35,7 +36,8 @@ public class ControleJogoImpl implements ControleJogo {
     private List<Observador> observadores = new ArrayList<>();
 
     private Util util;
-
+    private PontuacaoRodada pontuacaoRodada;
+    
     //métodos de controle
     @Override
     public void addObservador(Observador obs) {
@@ -45,6 +47,7 @@ public class ControleJogoImpl implements ControleJogo {
     @Override
     public void inicializar() {
         util = new Util();
+        pontuacaoRodada = new PontuacaoRodada(player1, player2);
         TabuleiroBuilder tabuleiroB = new TabuleiroConcreto();
         Director director = new Director(tabuleiroB);
         director.construir();
@@ -194,6 +197,8 @@ public class ControleJogoImpl implements ControleJogo {
                 colocaSapo("regiaEscura");
             } else {               
                     ControleTabuleiro.getInstance().novaRegiaEscura(x, y);
+                    PontuacaoRodada p = new PontuacaoRodada(player1,player2);
+                    
                     acaoAtual = "Fim da rodada! Iniciando uma nova";
                     notificarRemoveListenerNovaRegiaEscura();
                     notificarNovaRodada();              
@@ -361,6 +366,9 @@ public class ControleJogoImpl implements ControleJogo {
     private void notificarNovaRodada() {
         this.nPlayer1 = -1;
         this.nPlayer2 = -1;
+        
+        notificarPontos();
+        
         notificarMudancaTabuleiro();
         for (Observador obs : observadores) {
             obs.notificarNovaRodada();
@@ -464,5 +472,19 @@ public class ControleJogoImpl implements ControleJogo {
         for (Observador obs : observadores) {
             obs.notificarFloracaoAutomatica();
         }
+    }
+
+    private void notificarPontos() {
+        System.out.println("notificar");
+               
+        for(Observador obs: observadores){
+          if(player1.equalsIgnoreCase("amarelo")){
+            obs.notificarAlterouPontuacao(pontuacaoRodada.calculaPontosAmarelo(),
+            pontuacaoRodada.calculaPontosVermelho());
+          }else{
+            obs.notificarAlterouPontuacao(pontuacaoRodada.calculaPontosVermelho(),
+                    pontuacaoRodada.calculaPontosAmarelo());
+          }
+        }    
     }
 }

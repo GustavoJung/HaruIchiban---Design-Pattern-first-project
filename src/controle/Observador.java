@@ -48,4 +48,5 @@ public interface Observador {
 
         void notificarNovaRodada();
         
+        void notificarAlterouPontuacao(int pontuacaoPlayer1, int pontuacaoPlayer2);
 }

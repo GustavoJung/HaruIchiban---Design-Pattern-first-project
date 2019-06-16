@@ -59,12 +59,20 @@ public class HaruIchiban extends JFrame implements Observador {
     private JLabel turno;
     private JLabel pontuacaoP1;
     private JLabel pontuacaoP2;
+    private JLabel ipontuacaoP1;
+    private JLabel ipontuacaoP2;
     private JPanel panelPontuacao;
     private JRadioButton jrVermelho;
     private JRadioButton jrAmarelo;
     private Button b1;
 
     private static final long serialVersionUID = 1L;
+
+    @Override
+    public void notificarAlterouPontuacao(int pontuacaoPlayer1, int pontuacaoPlayer2) {
+        ipontuacaoP1.setText(pontuacaoPlayer1+"");
+        ipontuacaoP2.setText(pontuacaoPlayer2+"");
+   }
 
     class HaruTableModel extends AbstractTableModel {
 
@@ -173,12 +181,17 @@ public class HaruIchiban extends JFrame implements Observador {
         panelPontuacao.setLayout(new FlowLayout());
         panelPontuacao.setSize(50, 50);
 
-        pontuacaoP1 = new JLabel("Pontuacao player 1 = 0");
-        pontuacaoP2 = new JLabel("Pontuacao player 2 = 0");
+        pontuacaoP1 = new JLabel("Pontuacao player 1 = ");
+        pontuacaoP2 = new JLabel("Pontuacao player 2 = ");
 
+        ipontuacaoP1 = new JLabel(0+"");
+        ipontuacaoP2 = new JLabel(0+"");
+        
         JPanel placar = new JPanel();
         placar.add(pontuacaoP1);
+        placar.add(ipontuacaoP1);
         placar.add(pontuacaoP2);
+        placar.add(ipontuacaoP2);
         placar.setSize(50, 50);
         panelPontuacao.add(placar);
         add(panelPontuacao, NORTH);

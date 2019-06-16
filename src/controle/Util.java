@@ -125,9 +125,9 @@ public class Util {
         boolean retorno = true;
          
          if(ControleTabuleiro.getInstance().getTabuleiro()[x][y].getImagem().toString().equalsIgnoreCase("imagens/florAmarela.png") ||
-         ControleTabuleiro.getInstance().getTabuleiro()[x][y].getImagem().toString().equalsIgnoreCase("imagens/florVermelha.png"))
+            ControleTabuleiro.getInstance().getTabuleiro()[x][y].getImagem().toString().equalsIgnoreCase("imagens/florVermelha.png")){
              retorno = false;
-         
+    }
          return retorno;
     }
     
@@ -150,5 +150,23 @@ public class Util {
        
        return retorno;
     }
-     
+   
+    public boolean florAmarela(int x, int y) {
+        boolean retorno = true;
+         
+         if(ControleTabuleiro.getInstance().getTabuleiro()[x][y].getImagem().toString().equalsIgnoreCase("imagens/florAmarela.png"))
+             retorno = false;
+    
+         return retorno;
+    }
+    
+    public boolean florVermelha(int x, int y) {
+        boolean retorno = true;
+         
+         if(ControleTabuleiro.getInstance().getTabuleiro()[x][y].getImagem().toString().equalsIgnoreCase("imagens/florVermelha.png"))
+             retorno = false;
+    
+         return retorno;
+    }
+    
 }
