@@ -70,8 +70,8 @@ public class HaruIchiban extends JFrame implements Observador {
 
     @Override
     public void notificarAlterouPontuacao(int pontuacaoPlayer1, int pontuacaoPlayer2) {
-        ipontuacaoP1.setText(pontuacaoPlayer1+"");
-        ipontuacaoP2.setText(pontuacaoPlayer2+"");
+        ipontuacaoP1.setText(Integer.parseInt(ipontuacaoP1.getText()) + pontuacaoPlayer1+ "");
+        ipontuacaoP2.setText(Integer.parseInt(ipontuacaoP2.getText()) + pontuacaoPlayer2+ "");
    }
 
     class HaruTableModel extends AbstractTableModel {

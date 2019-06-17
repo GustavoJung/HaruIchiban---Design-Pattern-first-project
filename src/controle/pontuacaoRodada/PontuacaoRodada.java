@@ -26,14 +26,14 @@ public class PontuacaoRodada implements IPontuacaoRodada {
     @Override
     public int calculaPontosAmarelo() {
        return calculaPontosLinhaAmarelo() + calculaPontosColunaAmarelo() + calculaPontosDiagonalPrincipalAmarelo()
-               + calculaPontosDiagonalSeecundariaAmarelo();
+               + calculaPontosDiagonalSeecundariaAmarelo() + calculaPontosQuadradoAmarelo();
         
     }
     
     @Override
     public int calculaPontosVermelho(){
         return calculaPontosLinhaVermelho() + calculaPontosColunaVermelho() + calculaPontosDiagonalPrincipalVermelho()
-                + calculaPontosDiagonalSecundarioVermelho();
+                + calculaPontosDiagonalSecundarioVermelho()+ calculaPontosQuadradoVermelho();
     }
     
     
@@ -137,30 +137,29 @@ public class PontuacaoRodada implements IPontuacaoRodada {
             for(int j=0; j<tabuleiro.length; j++){
                 if(i==j){
                     if(util.florVermelha(j, i) == false){
-                        auxContaFlorVermelha++;
-                        System.out.println("AUMENTO 1 ONDE DEVE CHEGAR A 4");
+                        auxContaFlorVermelha++;     
                     }
                 }
             }
         }
         pontuacaoVermelha = calcPontuacao(auxContaFlorVermelha);
-        System.out.println("Pontuacao vermelho = " + pontuacaoVermelha);
 
+        
         auxContaFlorVermelha=0; 
+        
         return pontuacaoVermelha;
     }
 
     @Override
     public int calculaPontosDiagonalPrincipalAmarelo() {
-        System.out.println("diagonal amarela");
         int auxContaFlorAmarelo = 0; 
         int pontuacaoAmarelo =0;
         
         for(int i=0; i<tabuleiro.length; i++){
             for(int j=0; j<tabuleiro.length; j++){
                 if(i==j){
-                    if(util.florVermelha(j, i) == false){
-                        auxContaFlorAmarelo++;
+                    if(util.florAmarela(j, i) == false){                     
+                        auxContaFlorAmarelo++;  
                     }
                 }
             }   
@@ -168,7 +167,7 @@ public class PontuacaoRodada implements IPontuacaoRodada {
         
         pontuacaoAmarelo += calcPontuacao(auxContaFlorAmarelo);
         auxContaFlorAmarelo=0; 
-        
+  
         return pontuacaoAmarelo;
     }
 
@@ -177,11 +176,11 @@ public class PontuacaoRodada implements IPontuacaoRodada {
         int auxContaFlorAmarelo = 0; 
         int pontuacaoAmarelo =0;
         
-        for(int i=tabuleiro.length-1; i>=0; i--){
-            for(int j=tabuleiro.length-1; j>=0; j--){
-                if(i==j){
-                    if(util.florVermelha(i, j) == false){
-                        auxContaFlorAmarelo++;
+           for(int i=0; i<tabuleiro.length; i++){
+            for(int j=0; j<tabuleiro.length; j++){
+                if(i+j==tabuleiro.length-1){
+                    if(util.florAmarela(j, i) == false){
+                        auxContaFlorAmarelo++;    
                     }
                 }
             }
@@ -198,11 +197,11 @@ public class PontuacaoRodada implements IPontuacaoRodada {
         int auxContaFlorVermelha = 0; 
         int pontuacaoVermelha =0;
         
-        for(int i=tabuleiro.length-1; i>=0; i--){
-            for(int j=tabuleiro.length; j>=0; j--){
-                if(i==j){
-                    if(util.florVermelha(i, j) == false){
-                        auxContaFlorVermelha++;
+        for(int i=0; i<tabuleiro.length; i++){
+            for(int j=0; j<tabuleiro.length; j++){
+                if(i+j==tabuleiro.length-1){
+                    if(util.florVermelha(j, i) == false){
+                        auxContaFlorVermelha++;   
                     }
                 }
             }
@@ -210,8 +209,38 @@ public class PontuacaoRodada implements IPontuacaoRodada {
             
         }
         auxContaFlorVermelha=0; 
-        
         return pontuacaoVermelha;    
+    }
+
+    private int calculaPontosQuadradoAmarelo() {
+     int auxContaFlorAmarelo = 0; 
+     int pontuacaoAmarelo =0;
+     
+      for(int i=0; i<tabuleiro.length-1; i++){
+            for(int j=0; j<tabuleiro.length-1; j++){
+                if(!util.florAmarela(i, j) && !util.florAmarela(i+1, j) && !util.florAmarela(i, j+1) 
+                        && !util.florAmarela(i+1, j+1)){
+                    pontuacaoAmarelo = 1;
+                }
+            }   
+      }
+     
+      return pontuacaoAmarelo;
+    }
+
+    private int calculaPontosQuadradoVermelho() {
+        int auxContaFlorVermelha = 0; 
+        int pontuacaoVermelha =0;
+        
+        for(int i=0; i<tabuleiro.length-1; i++){
+            for(int j=0; j<tabuleiro.length-1; j++){
+                if(!util.florVermelha(i, j) && !util.florVermelha(i+1, j) && !util.florVermelha(i, j+1) 
+                        && !util.florVermelha(i+1, j+1)){
+                    pontuacaoVermelha = 1;
+                }
+            }   
+      }  
+        return pontuacaoVermelha;  
     }
 
     

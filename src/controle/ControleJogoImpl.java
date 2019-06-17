@@ -165,7 +165,7 @@ public class ControleJogoImpl implements ControleJogo {
                     colocaSapo(this.corSapoClicked);
             } else {              
                     ControleTabuleiro.getInstance().colocaFlor(x, y, cor);
-                    acaoAtual = "Jardineiro J -Selecione a régia que deseja movimentar!!";
+                    acaoAtual = "Jardineiro J -Selecione a régia que deseja movimentar!Use as setas!!";
                     notificaRemoveListenerFlor(acaoAtual);
             }
             notificarMudancaTabuleiro();
@@ -366,7 +366,7 @@ public class ControleJogoImpl implements ControleJogo {
     private void notificarNovaRodada() {
         this.nPlayer1 = -1;
         this.nPlayer2 = -1;
-        
+       
         notificarPontos();
         
         notificarMudancaTabuleiro();
