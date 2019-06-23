@@ -6,6 +6,7 @@
 package controle;
 
 import model.Peca;
+import strategy.BuscaTipoPecaTabuleiro;
 import tabuleiro.ControleTabuleiro;
 
 /**
@@ -13,7 +14,33 @@ import tabuleiro.ControleTabuleiro;
  * @author 08205268940
  */
 public class Util {
-     public String numeroExtenso(int numero){
+    
+    private BuscaTipoPecaTabuleiro buscaPeca;
+    private Peca peca;
+    
+    public Util(BuscaTipoPecaTabuleiro busca){
+        this.buscaPeca = busca;
+    }
+
+    public BuscaTipoPecaTabuleiro getBuscaPeca() {
+        return buscaPeca;
+    }
+
+    public void setBuscaPeca(BuscaTipoPecaTabuleiro buscaPeca) {
+        this.buscaPeca = buscaPeca;
+    }
+
+    public void setPeca(Peca peca) {
+        this.peca = peca;
+    }
+    
+    public boolean getTipoPeca() throws Exception{
+        return buscaPeca.isPeca(peca);
+    }
+    
+    
+    
+    public String numeroExtenso(int numero){
         String retorno = "";
         switch(numero){
             case 1:

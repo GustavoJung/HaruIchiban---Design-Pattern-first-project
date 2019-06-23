@@ -12,6 +12,8 @@ import model.Peca;
 import tabuleiro.ControleTabuleiro;
 import builder.Director;
 import controle.pontuacaoRodada.PontuacaoRodada;
+import strategy.BuscaTipoPecaTabuleiro;
+import strategy.BuscaTipoPecaTabuleiroFlorAmarela;
 
 
 public class ControleJogoImpl implements ControleJogo {
@@ -46,7 +48,7 @@ public class ControleJogoImpl implements ControleJogo {
 
     @Override
     public void inicializar() {
-        util = new Util();
+        util = new Util(new BuscaTipoPecaTabuleiroFlorAmarela());
         pontuacaoRodada = new PontuacaoRodada(player1, player2);
         TabuleiroBuilder tabuleiroB = new TabuleiroConcreto();
         Director director = new Director(tabuleiroB);
@@ -158,7 +160,7 @@ public class ControleJogoImpl implements ControleJogo {
     @Override
     public void colocaFlor(String cor, int x, int y) {
         if (util.naoFundo(x, y) && util.naoFlor(x, y)) {
-            if (!util.temSapo(x, y).equalsIgnoreCase("")) {
+           if (!util.temSapo(x, y).equalsIgnoreCase("")) {
                 corSapoClicked = util.temSapo(x, y).substring(4);
                 acaoAtual = "Jardineiro S- Posicione o sapo " + this.corSapoClicked + "!";     
                     ControleTabuleiro.getInstance().colocaFlor(x, y, cor);
@@ -197,8 +199,6 @@ public class ControleJogoImpl implements ControleJogo {
                 colocaSapo("regiaEscura");
             } else {               
                     ControleTabuleiro.getInstance().novaRegiaEscura(x, y);
-                    PontuacaoRodada p = new PontuacaoRodada(player1,player2);
-                    
                     acaoAtual = "Fim da rodada! Iniciando uma nova";
                     notificarRemoveListenerNovaRegiaEscura();
                     notificarNovaRodada();              
@@ -217,8 +217,8 @@ public class ControleJogoImpl implements ControleJogo {
                 ControleTabuleiro.getInstance().colocaSapo(selectedColumn, selectedRow, sapoClicked);
                 acaoAtual = "Fim da rodada! Iniciando uma nova";
                 notificarMudancaTabuleiro();
-                notificarRemoveListeners();
                 notificarJogadaAconteceu(acaoAtual);
+                notificarNovaRodada();
         } else {
             acaoAtual = "Jardineiro S - Impossível colocar o sapo! Coloque numa regia clara vazia!";
             notificarSapoLocalInvalido(acaoAtual);
@@ -259,8 +259,8 @@ public class ControleJogoImpl implements ControleJogo {
 
     private void colocaSapo(String sapo) {
         for (Observador obs : observadores) {
-            obs.notificarColocarSapo(sapo);
-            obs.notificarJogadaAconteceu(acaoAtual);
+            obs.notificarColocarSapo(sapo); 
+            obs.notificarJogadaAconteceu(acaoAtual);   
         }
     }
 
@@ -294,10 +294,12 @@ public class ControleJogoImpl implements ControleJogo {
     }
 
     //Acessores
+    @Override
     public int getAuxPosicaoClicadaVermelho() {
         return auxPosicaoClicadaVermelho;
     }
 
+    @Override
     public int getAuxPosicaoClicadaAmarelo() {
         return auxPosicaoClicadaAmarelo;
     }
@@ -367,11 +369,15 @@ public class ControleJogoImpl implements ControleJogo {
         this.nPlayer1 = -1;
         this.nPlayer2 = -1;
        
-        notificarPontos();
-        
-        notificarMudancaTabuleiro();
-        for (Observador obs : observadores) {
-            obs.notificarNovaRodada();
+        if(!notificarPontos()){    
+            notificarMudancaTabuleiro();
+            for (Observador obs : observadores) {
+                obs.notificarNovaRodada();
+            }
+        }else{
+            for (Observador obs : observadores) {
+                obs.notificarJogadaAconteceu("FIM DE JOGO");
+            }
         }
     }
 
@@ -474,17 +480,31 @@ public class ControleJogoImpl implements ControleJogo {
         }
     }
 
-    private void notificarPontos() {
-        System.out.println("notificar");
-               
+    private boolean notificarPontos() {        
+        int pontosAmarelo = pontuacaoRodada.calculaPontosAmarelo();
+        int pontosVermelho = pontuacaoRodada.calculaPontosVermelho();
+        boolean retorno = false;
+        if(pontosAmarelo < 5 && pontosVermelho < 5){
+            for(Observador obs: observadores){
+              if(player1.equalsIgnoreCase("amarelo")){
+                obs.notificarAlterouPontuacao(pontosAmarelo,pontosVermelho);
+              }else{
+                obs.notificarAlterouPontuacao(pontosVermelho,pontosAmarelo);
+              }
+            }    
+        }else{
+            retorno = true;
+            if(pontosAmarelo >= 5)
+                fimJogo("Amarelo");
+            else
+                fimJogo("Vermelho");
+        }
+        return retorno;
+    }
+
+    private void fimJogo(String vencedor) {
         for(Observador obs: observadores){
-          if(player1.equalsIgnoreCase("amarelo")){
-            obs.notificarAlterouPontuacao(pontuacaoRodada.calculaPontosAmarelo(),
-            pontuacaoRodada.calculaPontosVermelho());
-          }else{
-            obs.notificarAlterouPontuacao(pontuacaoRodada.calculaPontosVermelho(),
-                    pontuacaoRodada.calculaPontosAmarelo());
-          }
-        }    
+            obs.notificarFimJogo(vencedor);
+        }
     }
 }

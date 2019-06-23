@@ -9,7 +9,11 @@ import controle.Observador;
 import controle.Util;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import model.FlorAmarela;
 import model.Peca;
+import strategy.BuscaTipoPecaTabuleiroFlorAmarela;
 import tabuleiro.ControleTabuleiro;
 
 /**
@@ -24,21 +28,20 @@ public class PontuacaoRodada implements IPontuacaoRodada {
     private Peca[][] tabuleiro;
     
     @Override
-    public int calculaPontosAmarelo() {
-       return calculaPontosLinhaAmarelo() + calculaPontosColunaAmarelo() + calculaPontosDiagonalPrincipalAmarelo()
-               + calculaPontosDiagonalSeecundariaAmarelo() + calculaPontosQuadradoAmarelo();
-        
+    public int calculaPontosAmarelo() {     
+        return   calculaPontosLinhaAmarelo() + calculaPontosColunaAmarelo() + calculaPontosDiagonalPrincipalAmarelo()
+               + calculaPontosDiagonalSeecundariaAmarelo() + calculaPontosQuadradoAmarelo(); 
     }
     
     @Override
     public int calculaPontosVermelho(){
         return calculaPontosLinhaVermelho() + calculaPontosColunaVermelho() + calculaPontosDiagonalPrincipalVermelho()
-                + calculaPontosDiagonalSecundarioVermelho()+ calculaPontosQuadradoVermelho();
+             + calculaPontosDiagonalSecundarioVermelho()+ calculaPontosQuadradoVermelho();
     }
     
     
     public PontuacaoRodada(String p1, String p2){
-        util = new Util();
+        //util = new Util();
         player1 = p1;
         player2 = p2;
         tabuleiro = ControleTabuleiro.getInstance().getTabuleiro();
@@ -59,9 +62,8 @@ public class PontuacaoRodada implements IPontuacaoRodada {
                 if(util.florVermelha(j, i) == false){
                     auxContaFlorVermelha++;
                 }
-            }
             pontuacaoVermelha = calcPontuacao(auxContaFlorVermelha);
-            
+            }
             auxContaFlorVermelha=0; 
         }
         return pontuacaoVermelha;
@@ -74,11 +76,16 @@ public class PontuacaoRodada implements IPontuacaoRodada {
       
         for(int i=0; i<tabuleiro.length; i++){
             for(int j=0; j<tabuleiro.length; j++){
-                    if(util.florAmarela(j,i) == false){
+                try {
+                    if(1>2){
+//if(new BuscaTipoPecaTabuleiroFlorAmarela(j,i).isPeca(FlorAmarela) == false){
                         auxContaFlorAmarela++;
                     }
-            }
+                } catch (Exception ex) {
+                    Logger.getLogger(PontuacaoRodada.class.getName()).log(Level.SEVERE, null, ex);
+                }
             pontuacaoAmarela = calcPontuacao(auxContaFlorAmarela);
+            }
             auxContaFlorAmarela = 0; 
         }
         return pontuacaoAmarela;
@@ -94,8 +101,8 @@ public class PontuacaoRodada implements IPontuacaoRodada {
                     if(util.florAmarela(i,j) == false){
                         auxContaFlorAmarela++;
                     }
-            }
             pontuacaoAmarela = calcPontuacao(auxContaFlorAmarela);
+            }
             auxContaFlorAmarela = 0; 
         }
         return pontuacaoAmarela;
@@ -111,21 +118,20 @@ public class PontuacaoRodada implements IPontuacaoRodada {
                 if(util.florVermelha(i, j) == false){
                     auxContaFlorVermelha++;
                 }
-            }
             pontuacaoVermelha = calcPontuacao(auxContaFlorVermelha);
-            
+            }
             auxContaFlorVermelha=0; 
         }
         return pontuacaoVermelha;
     }
     
     private int calcPontuacao(int auxContaFlor) {
-        if(auxContaFlor == 4){
+        if(auxContaFlor == 5){
+            return 5;
+        }else if(auxContaFlor == 4){
             return 2;
-        }else if(auxContaFlor == 5){
-            return auxContaFlor;
         }
-        return 0;
+         return 0;
     }
 
     @Override
@@ -144,22 +150,29 @@ public class PontuacaoRodada implements IPontuacaoRodada {
         }
         pontuacaoVermelha = calcPontuacao(auxContaFlorVermelha);
 
-        
-        auxContaFlorVermelha=0; 
-        
         return pontuacaoVermelha;
     }
 
     @Override
     public int calculaPontosDiagonalPrincipalAmarelo() {
+        BuscaTipoPecaTabuleiroFlorAmarela buscaFlorAmarela = new BuscaTipoPecaTabuleiroFlorAmarela();
+        util =new Util(buscaFlorAmarela);
+        util.setPeca(new FlorAmarela());
+        
         int auxContaFlorAmarelo = 0; 
         int pontuacaoAmarelo =0;
         
         for(int i=0; i<tabuleiro.length; i++){
             for(int j=0; j<tabuleiro.length; j++){
                 if(i==j){
-                    if(util.florAmarela(j, i) == false){                     
-                        auxContaFlorAmarelo++;  
+                    buscaFlorAmarela.setX(j);
+                    buscaFlorAmarela.setY(i);
+                    try {
+                        if(util.getTipoPeca()){//util.florAmarela(j, i) == false){
+                            auxContaFlorAmarelo++;
+                        }
+                    } catch (Exception ex) {
+                        Logger.getLogger(PontuacaoRodada.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
             }   
@@ -187,7 +200,6 @@ public class PontuacaoRodada implements IPontuacaoRodada {
             pontuacaoAmarelo += calcPontuacao(auxContaFlorAmarelo);
             
         }
-            auxContaFlorAmarelo=0; 
         
         return pontuacaoAmarelo;
     }
@@ -242,6 +254,5 @@ public class PontuacaoRodada implements IPontuacaoRodada {
       }  
         return pontuacaoVermelha;  
     }
-
     
 }

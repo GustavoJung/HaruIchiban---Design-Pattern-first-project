@@ -74,6 +74,25 @@ public class HaruIchiban extends JFrame implements Observador {
         ipontuacaoP2.setText(Integer.parseInt(ipontuacaoP2.getText()) + pontuacaoPlayer2+ "");
    }
 
+    @Override
+    public void notificarFimJogo(String vencedor) {
+        this.remove(jdialog);
+        jdialog = new JDialog();
+        jdialog.setSize(350, 300);
+        jdialog.setLayout(new FlowLayout());
+        jdialog.setUndecorated(true);
+        jdialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+
+       jdialog.add(new JLabel("O VENCEDOR FOI O PLYER \n"
+               + vencedor));
+    
+       jdialog.setLocationRelativeTo(getJFrame());
+       jdialog.setVisible(true);
+    
+        System.out.println("FIM JOGO");
+                
+    }
+
     class HaruTableModel extends AbstractTableModel {
 
         private static final long serialVersionUID = 1L;
@@ -529,7 +548,7 @@ public class HaruIchiban extends JFrame implements Observador {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                Timer t = new Timer(5000, new ActionListener() {
+                Timer t = new Timer(3000, new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent arg0) {
 
@@ -550,7 +569,6 @@ public class HaruIchiban extends JFrame implements Observador {
         if (acao.equalsIgnoreCase("regiaEscura")) {
             tabuleiro.removeMouseListener(listenerColocaRegiaEscura);
             tabuleiro.addMouseListener(listenerColocaSapoRegia);
-
         } else {
             tabuleiro.removeMouseListener(listenerColocaFlor);
             tabuleiro.removeMouseListener(listenerColocaRegiaEscura);
