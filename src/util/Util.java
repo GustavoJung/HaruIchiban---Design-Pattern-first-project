@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package controle;
+package util;
 
 import model.Peca;
 import strategy.BuscaTipoPecaTabuleiro;
@@ -14,73 +14,11 @@ import tabuleiro.ControleTabuleiro;
  * @author 08205268940
  */
 public class Util {
-    
-    private BuscaTipoPecaTabuleiro buscaPeca;
-    private Peca peca;
-    
-    public Util(BuscaTipoPecaTabuleiro busca){
-        this.buscaPeca = busca;
-    }
 
-    public BuscaTipoPecaTabuleiro getBuscaPeca() {
-        return buscaPeca;
-    }
-
-    public void setBuscaPeca(BuscaTipoPecaTabuleiro buscaPeca) {
-        this.buscaPeca = buscaPeca;
-    }
-
-    public void setPeca(Peca peca) {
-        this.peca = peca;
+    public Util() {
     }
     
-    public boolean getTipoPeca() throws Exception{
-        return buscaPeca.isPeca(peca);
-    }
-    
-    
-    
-    public String numeroExtenso(int numero){
-        String retorno = "";
-        switch(numero){
-            case 1:
-                retorno = "Um";
-                break;
-            case 2:
-                retorno ="Dois";
-            break;
-            case 3:
-                retorno ="Tres";
-            break;
-            case 4:
-                retorno ="Quatro";
-            break;
-            case 5:
-                retorno ="Cinco";
-            break;
-            case 6:
-                retorno = "Seis";
-            break;
-            case 7:
-                retorno ="Sete";
-            break;
-            case 8:
-                retorno ="Oito";
-                break;
-        }
-        return retorno;
-    }
- 
-     public boolean numExiste(int[]vetor, int num){
-         boolean retorno = false;
-         
-         for(int i=0; i<vetor.length; i++){
-             if(vetor[i] == num)
-                 retorno = true;
-         }
-         return retorno;
-     }
-
+  
      public int[] getRegiaEscura(){
           Peca[][]tabuleiro = ControleTabuleiro.getInstance().getTabuleiro();
           int [] retorno = new int[2] ;
@@ -128,35 +66,10 @@ public class Util {
           return retorno;
      }
      
-     public String temSapo(int x, int y){
-         String retorno = "";
-         
-         if(ControleTabuleiro.getInstance().getTabuleiro()[x][y].getImagem().toString().equalsIgnoreCase("imagens/sapoVermelho.png")){
-             retorno = "sapoVermelho";            
-         }else if(ControleTabuleiro.getInstance().getTabuleiro()[x][y].getImagem().toString().equalsIgnoreCase("imagens/sapoAmarelo.png")) {
-                 retorno = "sapoAmarelo";  
-        }
-         return retorno;
-     }
+   
      
-     public boolean naoFundo(int x, int y){
-         boolean retorno = true;
-         
-         if(ControleTabuleiro.getInstance().getTabuleiro()[x][y].getImagem().toString().equalsIgnoreCase("imagens/fundoTabuleiro.png"))
-             retorno = false;
-         
-         return retorno;
-     }
-
-    public boolean naoFlor(int x, int y) {
-        boolean retorno = true;
-         
-         if(ControleTabuleiro.getInstance().getTabuleiro()[x][y].getImagem().toString().equalsIgnoreCase("imagens/florAmarela.png") ||
-            ControleTabuleiro.getInstance().getTabuleiro()[x][y].getImagem().toString().equalsIgnoreCase("imagens/florVermelha.png")){
-             retorno = false;
-    }
-         return retorno;
-    }
+     
+    
     
     public boolean naoSapo(int x, int y) {
         boolean retorno = true;

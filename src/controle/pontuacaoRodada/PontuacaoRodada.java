@@ -6,14 +6,17 @@
 package controle.pontuacaoRodada;
 
 import controle.Observador;
-import controle.Util;
+import util.Util;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.FlorAmarela;
+import model.FlorVermelha;
 import model.Peca;
+import strategy.BuscaTipoPecaTabuleiro;
 import strategy.BuscaTipoPecaTabuleiroFlorAmarela;
+import strategy.BuscaTipoPecaTabuleiroFlorVermelha;
 import tabuleiro.ControleTabuleiro;
 
 /**
@@ -22,10 +25,11 @@ import tabuleiro.ControleTabuleiro;
  */
 public class PontuacaoRodada implements IPontuacaoRodada {
     private List<Observador> observadores = new ArrayList<>();
-    private Util util;
+    private Util util = new Util();
     private String player1;
     private String player2;
     private Peca[][] tabuleiro;
+    BuscaTipoPecaTabuleiro buscaPeca;
     
     @Override
     public int calculaPontosAmarelo() {     
@@ -41,7 +45,6 @@ public class PontuacaoRodada implements IPontuacaoRodada {
     
     
     public PontuacaoRodada(String p1, String p2){
-        //util = new Util();
         player1 = p1;
         player2 = p2;
         tabuleiro = ControleTabuleiro.getInstance().getTabuleiro();
@@ -56,16 +59,24 @@ public class PontuacaoRodada implements IPontuacaoRodada {
     public int calculaPontosLinhaVermelho(){
         int auxContaFlorVermelha = 0; 
         int pontuacaoVermelha =0;
-        
+         
         for(int i=0; i<tabuleiro.length; i++){
             for(int j=0; j<tabuleiro.length; j++){
-                if(util.florVermelha(j, i) == false){
-                    auxContaFlorVermelha++;
+                    buscaPeca = new BuscaTipoPecaTabuleiroFlorVermelha(j,i);
+                try {
+                    if(buscaPeca.isPeca(new FlorVermelha())){
+                        auxContaFlorVermelha++;
+                    }
+                } catch (Exception ex) {
+                    Logger.getLogger(PontuacaoRodada.class.getName()).log(Level.SEVERE, null, ex);
                 }
-            pontuacaoVermelha = calcPontuacao(auxContaFlorVermelha);
+                
             }
-            auxContaFlorVermelha=0; 
+           
         }
+        pontuacaoVermelha = calcPontuacao(auxContaFlorVermelha);
+        auxContaFlorVermelha=0; 
+
         return pontuacaoVermelha;
     }
 
@@ -73,21 +84,24 @@ public class PontuacaoRodada implements IPontuacaoRodada {
     public int calculaPontosLinhaAmarelo(){
         int auxContaFlorAmarela = 0;   
         int pontuacaoAmarela =0;
-      
+         
         for(int i=0; i<tabuleiro.length; i++){
             for(int j=0; j<tabuleiro.length; j++){
                 try {
-                    if(1>2){
-//if(new BuscaTipoPecaTabuleiroFlorAmarela(j,i).isPeca(FlorAmarela) == false){
+                    buscaPeca = new BuscaTipoPecaTabuleiroFlorAmarela(j,i);
+                    if(buscaPeca.isPeca(new FlorAmarela())){
                         auxContaFlorAmarela++;
                     }
                 } catch (Exception ex) {
                     Logger.getLogger(PontuacaoRodada.class.getName()).log(Level.SEVERE, null, ex);
                 }
-            pontuacaoAmarela = calcPontuacao(auxContaFlorAmarela);
+            
             }
-            auxContaFlorAmarela = 0; 
-        }
+            
+        } 
+        pontuacaoAmarela = calcPontuacao(auxContaFlorAmarela);
+        auxContaFlorAmarela = 0; 
+       
         return pontuacaoAmarela;
     }
     
@@ -95,12 +109,17 @@ public class PontuacaoRodada implements IPontuacaoRodada {
     public int calculaPontosColunaAmarelo(){
         int auxContaFlorAmarela = 0;   
         int pontuacaoAmarela =0;
-      
+        
         for(int i=0; i<tabuleiro.length; i++){
             for(int j=0; j<tabuleiro.length; j++){
-                    if(util.florAmarela(i,j) == false){
+                try {
+                    buscaPeca = new BuscaTipoPecaTabuleiroFlorAmarela(i,j);
+                    if(buscaPeca.isPeca(new FlorAmarela())){
                         auxContaFlorAmarela++;
                     }
+                } catch (Exception ex) {
+                    Logger.getLogger(PontuacaoRodada.class.getName()).log(Level.SEVERE, null, ex);
+                }
             pontuacaoAmarela = calcPontuacao(auxContaFlorAmarela);
             }
             auxContaFlorAmarela = 0; 
@@ -115,8 +134,13 @@ public class PontuacaoRodada implements IPontuacaoRodada {
         
         for(int i=0; i<tabuleiro.length; i++){
             for(int j=0; j<tabuleiro.length; j++){
-                if(util.florVermelha(i, j) == false){
-                    auxContaFlorVermelha++;
+               buscaPeca = new BuscaTipoPecaTabuleiroFlorVermelha(i,j);
+                try {
+                    if(buscaPeca.isPeca(new FlorVermelha())){
+                        auxContaFlorVermelha++;
+                    }
+                } catch (Exception ex) {
+                    Logger.getLogger(PontuacaoRodada.class.getName()).log(Level.SEVERE, null, ex);
                 }
             pontuacaoVermelha = calcPontuacao(auxContaFlorVermelha);
             }
@@ -142,8 +166,13 @@ public class PontuacaoRodada implements IPontuacaoRodada {
         for(int i=0; i<tabuleiro.length; i++){
             for(int j=0; j<tabuleiro.length; j++){
                 if(i==j){
-                    if(util.florVermelha(j, i) == false){
-                        auxContaFlorVermelha++;     
+                    buscaPeca = new BuscaTipoPecaTabuleiroFlorVermelha(j,i);
+                    try {
+                        if(buscaPeca.isPeca(new FlorVermelha())){     
+                            auxContaFlorVermelha++;
+                        }
+                    } catch (Exception ex) {
+                        Logger.getLogger(PontuacaoRodada.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
             }
@@ -155,9 +184,7 @@ public class PontuacaoRodada implements IPontuacaoRodada {
 
     @Override
     public int calculaPontosDiagonalPrincipalAmarelo() {
-        BuscaTipoPecaTabuleiroFlorAmarela buscaFlorAmarela = new BuscaTipoPecaTabuleiroFlorAmarela();
-        util =new Util(buscaFlorAmarela);
-        util.setPeca(new FlorAmarela());
+       
         
         int auxContaFlorAmarelo = 0; 
         int pontuacaoAmarelo =0;
@@ -165,10 +192,9 @@ public class PontuacaoRodada implements IPontuacaoRodada {
         for(int i=0; i<tabuleiro.length; i++){
             for(int j=0; j<tabuleiro.length; j++){
                 if(i==j){
-                    buscaFlorAmarela.setX(j);
-                    buscaFlorAmarela.setY(i);
                     try {
-                        if(util.getTipoPeca()){//util.florAmarela(j, i) == false){
+                        buscaPeca = new BuscaTipoPecaTabuleiroFlorAmarela(j,i);
+                         if(buscaPeca.isPeca(new FlorAmarela())){
                             auxContaFlorAmarelo++;
                         }
                     } catch (Exception ex) {
@@ -189,11 +215,17 @@ public class PontuacaoRodada implements IPontuacaoRodada {
         int auxContaFlorAmarelo = 0; 
         int pontuacaoAmarelo =0;
         
-           for(int i=0; i<tabuleiro.length; i++){
+        
+        for(int i=0; i<tabuleiro.length; i++){
             for(int j=0; j<tabuleiro.length; j++){
                 if(i+j==tabuleiro.length-1){
-                    if(util.florAmarela(j, i) == false){
-                        auxContaFlorAmarelo++;    
+                    buscaPeca = new BuscaTipoPecaTabuleiroFlorAmarela(j,i);
+                    try {
+                        if(buscaPeca.isPeca(new FlorAmarela())){    
+                            auxContaFlorAmarelo++;
+                        }
+                    } catch (Exception ex) {
+                        Logger.getLogger(PontuacaoRodada.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
             }
@@ -212,8 +244,13 @@ public class PontuacaoRodada implements IPontuacaoRodada {
         for(int i=0; i<tabuleiro.length; i++){
             for(int j=0; j<tabuleiro.length; j++){
                 if(i+j==tabuleiro.length-1){
-                    if(util.florVermelha(j, i) == false){
-                        auxContaFlorVermelha++;   
+                    buscaPeca = new BuscaTipoPecaTabuleiroFlorVermelha(j,i);
+                    try {
+                        if(buscaPeca.isPeca(new FlorVermelha())){   
+                            auxContaFlorVermelha++;
+                        }
+                    } catch (Exception ex) {
+                        Logger.getLogger(PontuacaoRodada.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
             }
@@ -224,15 +261,20 @@ public class PontuacaoRodada implements IPontuacaoRodada {
         return pontuacaoVermelha;    
     }
 
-    private int calculaPontosQuadradoAmarelo() {
-     int auxContaFlorAmarelo = 0; 
+    private int calculaPontosQuadradoAmarelo() { 
      int pontuacaoAmarelo =0;
-     
+     Peca[][] tabuleiro = ControleTabuleiro.getInstance().getTabuleiro();
+    
       for(int i=0; i<tabuleiro.length-1; i++){
             for(int j=0; j<tabuleiro.length-1; j++){
-                if(!util.florAmarela(i, j) && !util.florAmarela(i+1, j) && !util.florAmarela(i, j+1) 
-                        && !util.florAmarela(i+1, j+1)){
-                    pontuacaoAmarelo = 1;
+                try { 
+                    buscaPeca = new BuscaTipoPecaTabuleiroFlorAmarela(j,i);
+                    if(buscaPeca.isPeca(tabuleiro[i][j]) && !util.florAmarela(i+1, j) && !util.florAmarela(i, j+1)
+                            && !util.florAmarela(i+1, j+1)){
+                        pontuacaoAmarelo = 1;
+                    }
+                } catch (Exception ex) {
+                    Logger.getLogger(PontuacaoRodada.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }   
       }
@@ -241,15 +283,19 @@ public class PontuacaoRodada implements IPontuacaoRodada {
     }
 
     private int calculaPontosQuadradoVermelho() {
-        int auxContaFlorVermelha = 0; 
         int pontuacaoVermelha =0;
         
         for(int i=0; i<tabuleiro.length-1; i++){
             for(int j=0; j<tabuleiro.length-1; j++){
-                if(!util.florVermelha(i, j) && !util.florVermelha(i+1, j) && !util.florVermelha(i, j+1) 
-                        && !util.florVermelha(i+1, j+1)){
+                buscaPeca = new BuscaTipoPecaTabuleiroFlorVermelha(j,i);
+               try {
+                if(buscaPeca.isPeca(tabuleiro[i][j]) && !util.florVermelha(i+1, j) && !util.florVermelha(i, j+1)
+                    && !util.florVermelha(i+1, j+1)){
                     pontuacaoVermelha = 1;
                 }
+               } catch (Exception ex) {
+                   Logger.getLogger(PontuacaoRodada.class.getName()).log(Level.SEVERE, null, ex);
+               }
             }   
       }  
         return pontuacaoVermelha;  

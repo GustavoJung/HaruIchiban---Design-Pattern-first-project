@@ -1,5 +1,6 @@
 package controle;
 
+import util.Util;
 import builder.TabuleiroBuilder;
 import builder.TabuleiroConcreto;
 import java.util.ArrayList;
@@ -12,8 +13,13 @@ import model.Peca;
 import tabuleiro.ControleTabuleiro;
 import builder.Director;
 import controle.pontuacaoRodada.PontuacaoRodada;
-import strategy.BuscaTipoPecaTabuleiro;
-import strategy.BuscaTipoPecaTabuleiroFlorAmarela;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import util.NaoFlor;
+import util.NaoFundo;
+import util.NumeroExiste;
+import util.NumeroExtenso;
+import util.TemSapo;
 
 
 public class ControleJogoImpl implements ControleJogo {
@@ -48,8 +54,8 @@ public class ControleJogoImpl implements ControleJogo {
 
     @Override
     public void inicializar() {
-        util = new Util(new BuscaTipoPecaTabuleiroFlorAmarela());
         pontuacaoRodada = new PontuacaoRodada(player1, player2);
+        util = new Util();
         TabuleiroBuilder tabuleiroB = new TabuleiroConcreto();
         Director director = new Director(tabuleiroB);
         director.construir();
@@ -87,7 +93,7 @@ public class ControleJogoImpl implements ControleJogo {
         int random = -1;
         for (int i = 0; i < 8; i++) {
             random = r.nextInt(8) + 1;
-            if (!util.numExiste(player1, random)) {
+            if (!new NumeroExiste().numExiste(player1, random)) {
                 player1[i] = random;
             } else {
                 i--;
@@ -104,7 +110,7 @@ public class ControleJogoImpl implements ControleJogo {
 
         for (int i = 0; i < 8; i++) {
             random = r.nextInt(8) + 1;
-            if (!util.numExiste(player2, random)) {
+            if (!new NumeroExiste().numExiste(player2, random)) {
                 player2[i] = random;
             } else {
                 i--;
@@ -130,7 +136,7 @@ public class ControleJogoImpl implements ControleJogo {
 
     @Override
     public String converteNumero(int i) {
-        return util.numeroExtenso(i);
+        return new NumeroExtenso().numeroExtenso(i);
     }
 
     @Override
@@ -159,16 +165,20 @@ public class ControleJogoImpl implements ControleJogo {
 
     @Override
     public void colocaFlor(String cor, int x, int y) {
-        if (util.naoFundo(x, y) && util.naoFlor(x, y)) {
-           if (!util.temSapo(x, y).equalsIgnoreCase("")) {
-                corSapoClicked = util.temSapo(x, y).substring(4);
-                acaoAtual = "Jardineiro S- Posicione o sapo " + this.corSapoClicked + "!";     
+        if (new NaoFundo().naoFundo(x, y) && new NaoFlor().isPeca(x, y)) {
+            try {
+                if (!new TemSapo().temSapo(x, y).equalsIgnoreCase("")) {
+                    corSapoClicked = new TemSapo().temSapo(x, y).substring(4);     
+                    acaoAtual = "Jardineiro S- Posicione o sapo " + this.corSapoClicked + "!";
                     ControleTabuleiro.getInstance().colocaFlor(x, y, cor);
                     colocaSapo(this.corSapoClicked);
-            } else {              
+                } else {              
                     ControleTabuleiro.getInstance().colocaFlor(x, y, cor);
                     acaoAtual = "Jardineiro J -Selecione a régia que deseja movimentar!Use as setas!!";
                     notificaRemoveListenerFlor(acaoAtual);
+                }
+            } catch (Exception ex) {
+                Logger.getLogger(ControleJogoImpl.class.getName()).log(Level.SEVERE, null, ex);
             }
             notificarMudancaTabuleiro();
         } else {
@@ -179,7 +189,8 @@ public class ControleJogoImpl implements ControleJogo {
 
     @Override
     public void posicionaSapo(String cor, int x, int y) {
-        if (util.naoFundo(x, y) && util.naoFlor(x, y) && util.naoSapo(x, y)) {
+        if (new NaoFundo().naoFundo(x, y) && new NaoFlor().isPeca(x, y) && 
+                (new TemSapo().temSapo(x, y).equalsIgnoreCase(""))) {
              ControleTabuleiro.getInstance().colocaSapo(x, y, cor);
                 acaoAtual = "Jardineiro J - Selecione a régia que deseja movimentar!Use as setas!";
                 notificarSapoColocado();
@@ -191,9 +202,9 @@ public class ControleJogoImpl implements ControleJogo {
 
     @Override
     public void novaRegiaEscura(int x, int y) {
-        if (util.naoFundo(x, y) && util.naoFlor(x, y)) {
-            if (!util.temSapo(x, y).equalsIgnoreCase("")) {
-                corSapoClicked = util.temSapo(x, y).substring(4);
+        if (new NaoFundo().naoFundo(x, y) && new NaoFlor().isPeca(x, y)) {
+            if (!new TemSapo().temSapo(x, y).equalsIgnoreCase("")) {
+                corSapoClicked = new TemSapo().temSapo(x, y).substring(4);  
                 acaoAtual = "Jardineiro S - Posicione o sapo " + this.corSapoClicked + "!";
                 ControleTabuleiro.getInstance().novaRegiaEscura(x, y);
                 colocaSapo("regiaEscura");
@@ -213,7 +224,8 @@ public class ControleJogoImpl implements ControleJogo {
 
     @Override
     public void posicionaSapoRegia(String sapoClicked, int selectedColumn, int selectedRow) {
-        if (util.naoFundo(selectedColumn, selectedRow) && util.naoFlor(selectedColumn, selectedRow) && util.naoSapo(selectedColumn, selectedRow)) {
+        if (new NaoFundo().naoFundo(selectedColumn, selectedRow) && new NaoFlor().isPeca(selectedColumn, selectedRow) 
+                && new TemSapo().temSapo(selectedColumn, selectedRow).equalsIgnoreCase("")) {
                 ControleTabuleiro.getInstance().colocaSapo(selectedColumn, selectedRow, sapoClicked);
                 acaoAtual = "Fim da rodada! Iniciando uma nova";
                 notificarMudancaTabuleiro();

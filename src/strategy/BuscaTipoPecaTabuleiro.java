@@ -7,6 +7,7 @@ package strategy;
 
 import model.Peca;
 
+
 /**
  *
  * @author mrcar
