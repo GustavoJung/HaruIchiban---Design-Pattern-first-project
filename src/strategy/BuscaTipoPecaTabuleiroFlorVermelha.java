@@ -7,7 +7,7 @@ package strategy;
 
 import model.FlorVermelha;
 import model.Peca;
-import tabuleiro.ControleTabuleiro;
+
 
 /**
  *
@@ -26,7 +26,7 @@ public class BuscaTipoPecaTabuleiroFlorVermelha implements BuscaTipoPecaTabuleir
     public boolean isPeca(Peca peca) throws Exception {
         boolean retorno = false;
          
-         if(ControleTabuleiro.getInstance().getTabuleiro()[x][y].getImagem().toString().equalsIgnoreCase(new FlorVermelha().getImagem().toString())){
+         if(peca.getImagem().toString().equalsIgnoreCase(new FlorVermelha().getImagem().toString())){
              retorno = true; 
          }
          return retorno;
