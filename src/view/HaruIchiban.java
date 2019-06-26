@@ -27,6 +27,9 @@ import javax.swing.table.DefaultTableCellRenderer;
 import controle.ControleJogo;
 import controle.ControleJogoImpl;
 import controle.Observador;
+import decorator.Maiuscula;
+import decorator.Texto;
+import decorator.TextoSimples;
 import static java.awt.BorderLayout.NORTH;
 import java.awt.Button;
 import java.awt.FlowLayout;
@@ -65,6 +68,13 @@ public class HaruIchiban extends JFrame implements Observador {
     private JRadioButton jrVermelho;
     private JRadioButton jrAmarelo;
     private Button b1;
+    private Texto textoJplayer;
+    private Texto textoPlayer2Escolhe;
+    private Texto textoPlayer1Escolhe;
+    private Texto textoJFlaracao;
+    private JRadioButton letraMaiuscula;
+    private JLabel player1Escolhe;
+    private JLabel player2Escolhe;
 
     private static final long serialVersionUID = 1L;
 
@@ -205,7 +215,7 @@ public class HaruIchiban extends JFrame implements Observador {
 
         ipontuacaoP1 = new JLabel(0+"");
         ipontuacaoP2 = new JLabel(0+"");
-        
+       letraMaiuscula = new JRadioButton("UpperCase");
         JPanel placar = new JPanel();
         placar.add(pontuacaoP1);
         placar.add(ipontuacaoP1);
@@ -213,7 +223,27 @@ public class HaruIchiban extends JFrame implements Observador {
         placar.add(ipontuacaoP2);
         placar.setSize(50, 50);
         panelPontuacao.add(placar);
+         placar.add(letraMaiuscula);
+        letraMaiuscula.setActionCommand("UpperCase");
         add(panelPontuacao, NORTH);
+    }
+      private void decoraterUpperCase(){
+        if(letraMaiuscula.isSelected()){
+            textoJFlaracao = new Maiuscula(
+                    new TextoSimples("FLORAÇÃO AUTOMÁTICA!!"));
+            textoPlayer1Escolhe = new Maiuscula(
+                    new TextoSimples("Player1 Escolha uma das flores para iniciar:"));
+            textoPlayer2Escolhe = new Maiuscula(
+                    new TextoSimples("Player2 Escolha uma das flores para iniciar :"));
+            textoJplayer = new Maiuscula(
+                    new TextoSimples("começará jogando O jogador:"));
+            
+        }else{
+        textoJFlaracao = new TextoSimples("FLORAÇÃO AUTOMÁTICA!!");
+        textoPlayer1Escolhe = new TextoSimples("Player1 Escolha uma das flores para iniciar:");
+        textoPlayer2Escolhe = new TextoSimples("Player2 Escolha uma das flores para iniciar :");
+        textoJplayer = new TextoSimples("começará jogando O jogador:");
+        }
     }
 
     public void addJrGroup() {
@@ -244,6 +274,7 @@ public class HaruIchiban extends JFrame implements Observador {
         String player2 = jrAmarelo.isSelected() ? "Vermelho" : "Amarelo";
         controle.setPlayer1(player1);
         controle.setPlayer2(player2);
+        decoraterUpperCase();
 
         jdialog.setSize(350, 300);
         jdialog.setLayout(new FlowLayout());
@@ -315,7 +346,7 @@ public class HaruIchiban extends JFrame implements Observador {
             }
         });
 
-        jdialog.add(new JLabel("Player1 Escolha uma das flores para iniciar:"));
+        jdialog.add(player1Escolhe = new JLabel(textoPlayer1Escolhe.getTexto()));
 
         if (player1.equalsIgnoreCase("Amarelo")) {
             jdialog.add(florAmarela1);
@@ -327,7 +358,7 @@ public class HaruIchiban extends JFrame implements Observador {
             jdialog.add(florVermelha3);
         }
 
-        jdialog.add(new JLabel("Player2 Escolha uma das flores para iniciar :"));
+        jdialog.add(player2Escolhe = new JLabel(textoPlayer2Escolhe.getTexto()));
         if (!player1.equalsIgnoreCase("Vermelho")) {
             jdialog.add(florVermelha1);
             jdialog.add(florVermelha2);
@@ -458,7 +489,7 @@ public class HaruIchiban extends JFrame implements Observador {
     @Override
     public void jardineiroJunior(int player) {
         if (player != 0) {
-            Jplayer = new JLabel("O Player " + player + " será o primeiro a jogar! Boa Sorte!");
+            Jplayer = new JLabel(textoJplayer.getTexto()+player);
             removeListener();
             if (SwingUtilities.isEventDispatchThread()) {
                 jdialog.add(Jplayer);
