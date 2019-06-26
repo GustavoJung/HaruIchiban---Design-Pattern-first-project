@@ -106,26 +106,17 @@ public class ControleTabuleiro {
                     }else
                         break;
                 }
-
                 if (x + auxiliar >= 5) {
                     stateMovement = false;
                 } else {
                     int cont = 0;
-                    while (cont < auxiliar) {
-                        tabuleiro[aux1 + 1][y] = aux;
-                        aux = aux2;
-
-                        if (aux1 + 1 < 4) {
-                            aux1++;
-                            
-                           
-                            aux2 = tabuleiro[aux1 + 1][y];
-                            
-                        }
+                    int cont2 = auxiliar;
+                    while (cont < cont2) {
+                        tabuleiro[x + auxiliar][y] = tabuleiro[x+auxiliar-1][y];
                         cont++;
-                        tabuleiro[x][y] = new FundoTabuleiro();
-                        
+                        auxiliar--;
                     }
+                    tabuleiro[x][y] = new FundoTabuleiro();
                     stateMovement = true;
                 }
             }
@@ -152,10 +143,10 @@ public class ControleTabuleiro {
                 stateMovement = false;
             } else {
                 
-                int auxiliar = 5;
+                int auxiliar = 0;
                 for (int i = x; i > 0; i--) {
                     if (!tabuleiro[i][y].getImagem().toString().equalsIgnoreCase("imagens/fundoTabuleiro.png")) {
-                        auxiliar--;
+                        auxiliar++;
                     }else{
                         break;
                     }
@@ -164,17 +155,13 @@ public class ControleTabuleiro {
                     stateMovement = false;
                 } else {
                     int cont = 0;
-                    while (cont < auxiliar) {
-                        tabuleiro[aux1 - 1][y] = aux;
-                        aux = aux2;
-
-                        if (aux1 - 1 > 0) {
-                            aux1--;
-                            aux2 = tabuleiro[aux1-1][y];
-                        }
+                    int cont2 = auxiliar;
+                    while (cont < cont2) {
+                        tabuleiro[x - auxiliar][y] = tabuleiro[x-auxiliar+1][y];
                         cont++;
-                        tabuleiro[x][y] = new FundoTabuleiro();
+                        auxiliar--;
                     }
+                    tabuleiro[x][y] = new FundoTabuleiro();
                     stateMovement = true;
                 }
             }
@@ -205,30 +192,20 @@ public class ControleTabuleiro {
                 for (int i = y; i < 5; i++) {
                     if (!tabuleiro[x][i].getImagem().toString().equalsIgnoreCase("imagens/fundoTabuleiro.png")) {
                         auxiliar++;
-                    }else
-                       
+                    }else 
                         break;
                 }
-
                 if (y + auxiliar >= 5) {
                     stateMovement = false;
                 } else {
                     int cont = 0;
-                    while (cont < auxiliar) {
-                        tabuleiro[x][aux1 +1] = aux;
-                        aux = aux2;
-
-                        if (aux1 + 1 < 4) {
-                            aux1++;
-                            
-                           
-                            aux2 = tabuleiro[x][aux1 + 1];
-                            
-                        }
+                    int cont2= auxiliar;
+                    while (cont < cont2) {
+                        tabuleiro[x][y+auxiliar] = tabuleiro[x][y+auxiliar-1];
                         cont++;
-                        tabuleiro[x][y] = new FundoTabuleiro();
-                        
+                        auxiliar--;            
                     }
+                    tabuleiro[x][y] = new FundoTabuleiro();
                     stateMovement = true;
                 }
             }
@@ -254,10 +231,10 @@ public class ControleTabuleiro {
                 stateMovement = false;
             } else {
                 
-                int auxiliar = 5;
+                int auxiliar = 0;
                 for (int i = y; i > 0; i--) {
                     if (!tabuleiro[x][i].getImagem().toString().equalsIgnoreCase("imagens/fundoTabuleiro.png")) {
-                        auxiliar--;
+                        auxiliar++;
                     }else{
                         break;
                     }
@@ -266,17 +243,15 @@ public class ControleTabuleiro {
                     stateMovement = false;
                 } else {
                     int cont = 0;
-                    while (cont < auxiliar) {
-                        tabuleiro[x][aux1 - 1] = aux;
-                        aux = aux2;
-
-                        if (aux1 - 1 > 0) {
-                            aux1--;
-                            aux2 = tabuleiro[x][aux1 - 1];
-                        }
+                    int cont2 =auxiliar;
+  
+                    while (cont < cont2) {
+                        tabuleiro[x][y -auxiliar] = tabuleiro[x][y-auxiliar+1];
                         cont++;
-                        tabuleiro[x][y] = new FundoTabuleiro();
-                    }
+                        auxiliar--;
+                    }    
+                    
+                    tabuleiro[x][y] = new FundoTabuleiro();
                     stateMovement = true;
                 }
             }
