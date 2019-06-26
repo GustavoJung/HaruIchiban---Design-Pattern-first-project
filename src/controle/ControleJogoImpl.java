@@ -15,6 +15,7 @@ import builder.Director;
 import controle.pontuacaoRodada.PontuacaoRodada;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import state.EstadoJogo;
 import util.NaoFlor;
 import util.NaoFundo;
 import util.NumeroExiste;
@@ -40,6 +41,7 @@ public class ControleJogoImpl implements ControleJogo {
     private Peca[][] tabuleiro;
     private int auxPosicaoClicadaVermelho;
     private int auxPosicaoClicadaAmarelo;
+    private EstadoJogo estadoJogo = new EstadoJogo();
 
   
     private List<Observador> observadores = new ArrayList<>();
@@ -241,7 +243,8 @@ public class ControleJogoImpl implements ControleJogo {
     @Override
     public void jogoIniciou() {
         if (this.jardineiroJunior != null && this.jardineiroSenior != null) {
-            this.acaoAtual = "Jardineiro S - Posicione sua flor!";
+            
+            this.acaoAtual = estadoJogo.colocaFlor();
             notificarJogoIniciou();
         }
     }
