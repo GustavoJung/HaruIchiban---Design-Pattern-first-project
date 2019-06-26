@@ -20,6 +20,7 @@ import util.NaoFundo;
 import util.NumeroExiste;
 import util.NumeroExtenso;
 import util.TemSapo;
+import visitor.BuscaRegiaEscura;
 
 
 public class ControleJogoImpl implements ControleJogo {
@@ -40,7 +41,7 @@ public class ControleJogoImpl implements ControleJogo {
     private int auxPosicaoClicadaVermelho;
     private int auxPosicaoClicadaAmarelo;
 
-    private MovimentoHeroi movimentoHeroi;
+  
     private List<Observador> observadores = new ArrayList<>();
 
     private Util util;
@@ -247,7 +248,15 @@ public class ControleJogoImpl implements ControleJogo {
 
     @Override
     public void primeiraRodada() {
-        int[] regiaEscura = util.getRegiaEscura();
+       BuscaRegiaEscura buscaRegiaEscura = new BuscaRegiaEscura();
+        try {
+            util.accept(buscaRegiaEscura);
+        } catch (Exception ex) {
+            Logger.getLogger(ControleJogoImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        int[] regiaEscura =buscaRegiaEscura.getRegiaEscura();
+        
         ControleTabuleiro.getInstance().colocaFlor(regiaEscura[0], regiaEscura[1], jardineiroJunior);
         notificarJogadaAconteceu(acaoAtual);
     }

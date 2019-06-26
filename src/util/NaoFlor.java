@@ -6,12 +6,13 @@
 package util;
 
 import tabuleiro.ControleTabuleiro;
+import visitor.Visitor;
 
 /**
  *
  * @author mrcar
  */
-public class NaoFlor{
+public class NaoFlor {
 
     public boolean isPeca(int x, int y) {
          boolean retorno = true;
@@ -19,7 +20,13 @@ public class NaoFlor{
          if(ControleTabuleiro.getInstance().getTabuleiro()[x][y].getImagem().toString().equalsIgnoreCase("imagens/florAmarela.png") ||
             ControleTabuleiro.getInstance().getTabuleiro()[x][y].getImagem().toString().equalsIgnoreCase("imagens/florVermelha.png")){
              retorno = false;
-    }
+        }
          return retorno;
     }
+
+ 
+
+  
+   
+    
 }

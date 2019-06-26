@@ -7,6 +7,7 @@ package util;
 
 import model.Peca;
 import tabuleiro.ControleTabuleiro;
+import visitor.Visitor;
 
 /**
  *
@@ -99,5 +100,9 @@ public class Util {
     
          return retorno;
     }
+    
+    public void accept(Visitor visitor) throws Exception {
+		visitor.visit(this);
+	}
     
 }
