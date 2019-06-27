@@ -172,12 +172,12 @@ public class ControleJogoImpl implements ControleJogo {
             try {
                 if (!new TemSapo().temSapo(x, y).equalsIgnoreCase("")) {
                     corSapoClicked = new TemSapo().temSapo(x, y).substring(4);     
-                    acaoAtual = "Jardineiro S- Posicione o sapo " + this.corSapoClicked + "!";
+                    acaoAtual = estadoJogo.JardineiroSPosicioneSapo() + this.corSapoClicked + "!";
                     ControleTabuleiro.getInstance().colocaFlor(x, y, cor);
                     colocaSapo(this.corSapoClicked);
                 } else {              
                     ControleTabuleiro.getInstance().colocaFlor(x, y, cor);
-                    acaoAtual = "Jardineiro J -Selecione a régia que deseja movimentar!Use as setas!!";
+                    acaoAtual = estadoJogo.jardineiroJSelecionaRegia();
                     notificaRemoveListenerFlor(acaoAtual);
                 }
             } catch (Exception ex) {
@@ -185,7 +185,7 @@ public class ControleJogoImpl implements ControleJogo {
             }
             notificarMudancaTabuleiro();
         } else {
-            acaoAtual = "Jardineiro S - Impossível colocar flor aqui! Coloque numa regia vazia!";
+            acaoAtual = estadoJogo.jardineiroSImpossívelColocarFlor();
             notificarFlorLocalInvalido(acaoAtual);
         }
     }
@@ -195,10 +195,10 @@ public class ControleJogoImpl implements ControleJogo {
         if (new NaoFundo().naoFundo(x, y) && new NaoFlor().isPeca(x, y) && 
                 (new TemSapo().temSapo(x, y).equalsIgnoreCase(""))) {
              ControleTabuleiro.getInstance().colocaSapo(x, y, cor);
-                acaoAtual = "Jardineiro J - Selecione a régia que deseja movimentar!Use as setas!";
+                acaoAtual = estadoJogo.jardineiroJSelecionaRegia();
                 notificarSapoColocado();
         } else {
-            acaoAtual = "Jardineiro J - Impossível colocar o sapo! Coloque numa regia clara vazia!";
+            acaoAtual = estadoJogo.jardineiroJImpossívelColocarosapo();
             notificarSapoLocalInvalido(acaoAtual);
         }
     }
@@ -220,7 +220,7 @@ public class ControleJogoImpl implements ControleJogo {
             notificarJogadaAconteceu(acaoAtual);
             notificarMudancaTabuleiro();
         } else {
-            acaoAtual = "Jardineiro S - Impossível tornar em régia escura! Selecione uma clara!";
+            acaoAtual = estadoJogo.jardineiroSImpossíveltornaremrégiaescura();
             notificarRegiaEscuraInvalida();
         }
     }
@@ -230,12 +230,12 @@ public class ControleJogoImpl implements ControleJogo {
         if (new NaoFundo().naoFundo(selectedColumn, selectedRow) && new NaoFlor().isPeca(selectedColumn, selectedRow) 
                 && new TemSapo().temSapo(selectedColumn, selectedRow).equalsIgnoreCase("")) {
                 ControleTabuleiro.getInstance().colocaSapo(selectedColumn, selectedRow, sapoClicked);
-                acaoAtual = "Fim da rodada! Iniciando uma nova";
+                acaoAtual = estadoJogo.fimdaRodada();
                 notificarMudancaTabuleiro();
                 notificarJogadaAconteceu(acaoAtual);
                 notificarNovaRodada();
         } else {
-            acaoAtual = "Jardineiro S - Impossível colocar o sapo! Coloque numa regia clara vazia!";
+            acaoAtual = estadoJogo.JardineiroSImpossívelcolocarosapo();
             notificarSapoLocalInvalido(acaoAtual);
         }
     }

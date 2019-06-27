@@ -17,12 +17,6 @@ public class EscolherFlor  extends AbstState{
     public String estado(EstadoJogo estado) {
        return "Jardineiro Senior Posicione sua Flor";
     }
-
-    @Override
-    public String toString() {
-        return "EscolherFlor";
-    }
-    
-    
+  
     
 }

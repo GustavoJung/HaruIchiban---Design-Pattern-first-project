@@ -17,5 +17,34 @@ public class EstadoJogo {
         estado = new EscolherFlor();
         return estado.estado(this);
     }
+    public String JardineiroSPosicioneSapo(){
+        estado = new JardineiroSPosicionoSapo();
+        return estado.estado(this);
+    }
+    
+    public String jardineiroJSelecionaRegia(){
+        estado = new JardineiroJSelecionearegia();
+        return  estado.estado(this);
+    }
+    public String jardineiroSImpossívelColocarFlor(){
+        estado = new JardineiroSImpossívelColocarFlor();
+        return estado.estado(this);
+    }
+    public String jardineiroJImpossívelColocarosapo(){
+        estado = new JardineiroJImpossívelColocarosapo();
+        return estado.estado(this);
+    }
+    public String jardineiroSImpossíveltornaremrégiaescura(){
+        estado = new JardineiroSImpossíveltornaremrégiaescura();
+        return estado.estado(this);
+    }
+    public String fimdaRodada(){
+        estado = new FimdaRodada();
+        return estado.estado(this);
+    }
+    public String JardineiroSImpossívelcolocarosapo(){
+        estado = new JardineiroJImpossívelColocarosapo();
+        return estado.estado(this);
+    }
     
 }

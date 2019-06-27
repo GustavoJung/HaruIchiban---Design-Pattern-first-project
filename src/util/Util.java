@@ -15,24 +15,6 @@ import visitor.Visitor;
  */
 public class Util {
     
-     private String acaoAtual;
-
-    public String getAcaoAtual() {
-        return acaoAtual;
-    }
-
-    public void setAcaoAtual(String acaoAtual) {
-        this.acaoAtual = acaoAtual;
-    }
-    
-    private static Util instance;
-
-    public synchronized static Util getInstance() {
-        if (instance == null) {
-            instance = new Util();
-        }
-        return instance;
-    }
   
      public int[] getRegiaEscura(){
           Peca[][]tabuleiro = ControleTabuleiro.getInstance().getTabuleiro();

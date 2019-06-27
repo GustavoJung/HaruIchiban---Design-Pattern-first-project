@@ -5,17 +5,15 @@
  */
 package state;
 
-import util.Util;
-
 /**
  *
  * @author Luciano Velho
  */
-public abstract class AbstState {
-    
-    public abstract String estado(EstadoJogo estado);
+public class JardineiroSPosicionoSapo extends AbstState{
 
-    
-    
+    @Override
+    public String estado(EstadoJogo estado) {
+        return "Jardineiro S- Posicione o sapo ";
+    }
     
 }
