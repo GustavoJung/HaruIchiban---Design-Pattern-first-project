@@ -17,6 +17,7 @@ public class Maiuscula extends DecoratorTexto{
     }
     
 
+    @Override
    public String getTexto() {
         return super.getTexto().toUpperCase();
         

@@ -5,8 +5,6 @@
  */
 package state;
 
-import util.Util;
-
 /**
  *
  * @author Luciano Velho

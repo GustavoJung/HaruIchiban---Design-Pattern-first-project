@@ -14,14 +14,7 @@ import model.Peca;
  * @author mrcar
  */
 public class BuscaTipoPecaTabuleiroFlorVermelha implements BuscaTipoPecaTabuleiro{
-    int x;
-    int y;
-    
-    public BuscaTipoPecaTabuleiroFlorVermelha(int x, int y) {
-        this.x = x;
-        this.y = y;
-    }
-    
+
     @Override
     public boolean isPeca(Peca peca) throws Exception {
         boolean retorno = false;

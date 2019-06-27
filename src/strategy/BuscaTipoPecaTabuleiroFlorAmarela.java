@@ -14,12 +14,9 @@ import model.Peca;
  * @author mrcar
  */
 public class BuscaTipoPecaTabuleiroFlorAmarela implements BuscaTipoPecaTabuleiro{
-    int x;
-    int y;
 
-    public BuscaTipoPecaTabuleiroFlorAmarela(int x, int y) {
-        this.x = x;
-        this.y = y;
+
+    public BuscaTipoPecaTabuleiroFlorAmarela() {
     }
     
     

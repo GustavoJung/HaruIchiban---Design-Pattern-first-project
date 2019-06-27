@@ -5,10 +5,6 @@
  */
 package decorator;
 
-import controle.ControleJogo;
-import controle.Observador;
-import java.util.ArrayList;
-import java.util.List;
 
 
 /**
@@ -23,6 +19,7 @@ public abstract class DecoratorTexto implements Texto{
 		this.texto = texto;
 	}
 
+    @Override
     public String getTexto() {
         return texto.getTexto();
     }

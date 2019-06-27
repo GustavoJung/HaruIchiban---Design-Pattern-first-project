@@ -61,7 +61,7 @@ public class PontuacaoRodada implements IPontuacaoRodada {
 
         for (int i = 0; i < tabuleiro.length; i++) {
             for (int j = 0; j < tabuleiro.length; j++) {
-                buscaPeca = new BuscaTipoPecaTabuleiroFlorVermelha(j, i);
+                buscaPeca = new BuscaTipoPecaTabuleiroFlorVermelha();
                 try {
                     if (buscaPeca.isPeca(tabuleiro[i][j])) {
                         auxContaFlorVermelha++;
@@ -88,7 +88,7 @@ public class PontuacaoRodada implements IPontuacaoRodada {
         for (int i = 0; i < tabuleiro.length; i++) {
             for (int j = 0; j < tabuleiro.length; j++) {
                 try {
-                    buscaPeca = new BuscaTipoPecaTabuleiroFlorAmarela(j, i);
+                    buscaPeca = new BuscaTipoPecaTabuleiroFlorAmarela();
                     if (buscaPeca.isPeca(tabuleiro[i][j])) {
                         auxContaFlorAmarela++;
                     }
@@ -113,7 +113,7 @@ public class PontuacaoRodada implements IPontuacaoRodada {
         for (int i = 0; i < tabuleiro.length; i++) {
             for (int j = 0; j < tabuleiro.length; j++) {
                 try {
-                    buscaPeca = new BuscaTipoPecaTabuleiroFlorAmarela(i, j);
+                    buscaPeca = new BuscaTipoPecaTabuleiroFlorAmarela();
                     if (buscaPeca.isPeca(tabuleiro[i][j])) {
                         auxContaFlorAmarela++;
                     }
@@ -137,7 +137,7 @@ public class PontuacaoRodada implements IPontuacaoRodada {
 
         for (int i = 0; i < tabuleiro.length; i++) {
             for (int j = 0; j < tabuleiro.length; j++) {
-                buscaPeca = new BuscaTipoPecaTabuleiroFlorVermelha(i, j);
+                buscaPeca = new BuscaTipoPecaTabuleiroFlorVermelha();
                 try {
                     if (buscaPeca.isPeca(tabuleiro[i][j])) {
                         auxContaFlorVermelha++;
@@ -173,7 +173,7 @@ public class PontuacaoRodada implements IPontuacaoRodada {
         for (int i = 0; i < tabuleiro.length; i++) {
             for (int j = 0; j < tabuleiro.length; j++) {
                 if (i == j) {
-                    buscaPeca = new BuscaTipoPecaTabuleiroFlorVermelha(j, i);
+                    buscaPeca = new BuscaTipoPecaTabuleiroFlorVermelha();
                     try {
                         if (buscaPeca.isPeca(tabuleiro[i][j])) {
                             auxContaFlorVermelha++;
@@ -199,7 +199,7 @@ public class PontuacaoRodada implements IPontuacaoRodada {
             for (int j = 0; j < tabuleiro.length; j++) {
                 if (i == j) {
                     try {
-                        buscaPeca = new BuscaTipoPecaTabuleiroFlorAmarela(j, i);
+                        buscaPeca = new BuscaTipoPecaTabuleiroFlorAmarela();
                         if (buscaPeca.isPeca(tabuleiro[i][j])) {
                             auxContaFlorAmarelo++;
                         }
@@ -223,7 +223,7 @@ public class PontuacaoRodada implements IPontuacaoRodada {
         for (int i = 0; i < tabuleiro.length; i++) {
             for (int j = 0; j < tabuleiro.length; j++) {
                 if (i + j == tabuleiro.length - 1) {
-                    buscaPeca = new BuscaTipoPecaTabuleiroFlorAmarela(j, i);
+                    buscaPeca = new BuscaTipoPecaTabuleiroFlorAmarela();
                     try {
                         if (buscaPeca.isPeca(tabuleiro[i][j])) {
                             auxContaFlorAmarelo++;
@@ -247,7 +247,7 @@ public class PontuacaoRodada implements IPontuacaoRodada {
         for (int i = 0; i < tabuleiro.length; i++) {
             for (int j = 0; j < tabuleiro.length; j++) {
                 if (i + j == tabuleiro.length - 1) {
-                    buscaPeca = new BuscaTipoPecaTabuleiroFlorVermelha(j, i);
+                    buscaPeca = new BuscaTipoPecaTabuleiroFlorVermelha();
                     try {
                         if (buscaPeca.isPeca(tabuleiro[i][j])) {
                             auxContaFlorVermelha++;
@@ -269,7 +269,7 @@ public class PontuacaoRodada implements IPontuacaoRodada {
         for (int i = 0; i < tabuleiro.length - 1; i++) {
             for (int j = 0; j < tabuleiro.length - 1; j++) {
                 try {
-                    buscaPeca = new BuscaTipoPecaTabuleiroFlorAmarela(j, i);
+                    buscaPeca = new BuscaTipoPecaTabuleiroFlorAmarela();
                     if (buscaPeca.isPeca(tabuleiro[i][j]) && buscaPeca.isPeca(tabuleiro[i + 1][j])
                             && buscaPeca.isPeca(tabuleiro[i][j + 1]) && buscaPeca.isPeca(tabuleiro[i + 1][j + 1])) {
                         pontuacaoAmarelo = 1;
@@ -288,7 +288,7 @@ public class PontuacaoRodada implements IPontuacaoRodada {
 
         for (int i = 0; i < tabuleiro.length - 1; i++) {
             for (int j = 0; j < tabuleiro.length - 1; j++) {
-                buscaPeca = new BuscaTipoPecaTabuleiroFlorVermelha(j, i);
+                buscaPeca = new BuscaTipoPecaTabuleiroFlorVermelha();
                 try {
                     if (buscaPeca.isPeca(tabuleiro[i][j]) && buscaPeca.isPeca(tabuleiro[i + 1][j])
                             && buscaPeca.isPeca(tabuleiro[i][j + 1]) && buscaPeca.isPeca(tabuleiro[i + 1][j + 1])) {

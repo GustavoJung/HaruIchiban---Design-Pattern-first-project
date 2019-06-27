@@ -41,7 +41,7 @@ public class ControleJogoImpl implements ControleJogo {
     private Peca[][] tabuleiro;
     private int auxPosicaoClicadaVermelho;
     private int auxPosicaoClicadaAmarelo;
-    private EstadoJogo estadoJogo = new EstadoJogo();
+    private EstadoJogo estadoJogo;
 
   
     private List<Observador> observadores = new ArrayList<>();
@@ -57,6 +57,7 @@ public class ControleJogoImpl implements ControleJogo {
 
     @Override
     public void inicializar() {
+        estadoJogo = new EstadoJogo();
         pontuacaoRodada = new PontuacaoRodada(player1, player2);
         util = new Util();
         TabuleiroBuilder tabuleiroB = new TabuleiroConcreto();
